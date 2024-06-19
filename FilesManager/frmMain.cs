@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MetadataExtractor.Formats.Exif;
+using MetadataExtractor;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,13 +10,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FilesManager
 {
     public partial class frmMain : DockContent
     {
         frmProperties frmProperties;
-        List<Dictionary<string, string>> files;
+        List<Dictionary<string, string>> filesList;
         public frmMain(string directoryPath)
         {
             InitializeComponent();
@@ -22,6 +25,7 @@ namespace FilesManager
             loadFiles(directoryPath);
             listViewFiles.ListViewItemSorter = new ListViewItemComparer(0, SortOrder.Ascending);
             this.Load += new EventHandler(frmMain_Load);
+            filesList = new List<Dictionary<string, string>>();
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -128,26 +132,13 @@ namespace FilesManager
         {
             if (folderBrowserDlg.ShowDialog() == DialogResult.OK)
             {
+                filesList.Clear();
                 string path = folderBrowserDlg.SelectedPath;
-                ListAllDirectories(toolStripLblFilePath.Text);
-
-                foreach (var file in files)
+                // Prepare the BackgroundWorker to run the copy operation
+                if (!backgroundWorker1.IsBusy)
                 {
-                    string sourceFile = file["Path"];
-                    var fileInfo = new System.IO.FileInfo(sourceFile);
-                    if (fileInfo.Exists)
-                    {
-                        var dateCreated = fileInfo.CreationTime;
-                        var dateModified = fileInfo.LastWriteTime;
-                        var pathToCreate = System.IO.Path.Combine(path, dateCreated.Year.ToString(), dateCreated.ToString("MMMM"), dateCreated.ToString("dd"));
-                        if (!System.IO.Directory.Exists(pathToCreate))
-                        {
-                            System.IO.Directory.CreateDirectory(pathToCreate);
-                        }
-                        var fileNameNew = "Img_" + dateCreated.ToString("yyyyMMddHHmmss") + fileInfo.Extension;
-                        string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
-                        System.IO.File.Copy(sourceFile, destinationFile, true);
-                    }
+                    // Pass the selected path as an argument
+                    backgroundWorker1.RunWorkerAsync(path);
                 }
             }
         }
@@ -159,7 +150,7 @@ namespace FilesManager
                 string[] files = System.IO.Directory.GetFiles(path);
                 foreach (string file in files)
                 {
-                    this.files.Add(new Dictionary<string, string>
+                    this.filesList.Add(new Dictionary<string, string>
                     {
                         { "Name", System.IO.Path.GetFileName(file) },
                         { "Path", file }
@@ -194,22 +185,23 @@ namespace FilesManager
             string path = e.Argument.ToString();
             ListAllDirectories(toolStripLblFilePath.Text);
 
-            int totalFiles = files.Count;
+            int totalFiles = filesList.Count;
             int processedFiles = 0;
 
-            foreach (var file in files)
+            foreach (var file in filesList)
             {
                 string sourceFile = file["Path"];
                 var fileInfo = new System.IO.FileInfo(sourceFile);
                 if (fileInfo.Exists)
                 {
-                    var dateCreated = fileInfo.CreationTime;
-                    var pathToCreate = System.IO.Path.Combine(path, dateCreated.Year.ToString(), dateCreated.ToString("MMMM"), dateCreated.ToString("dd"));
+                    var dateCreated = GetFileCreatedTimeFromExifData(sourceFile);
+
+                    var pathToCreate = System.IO.Path.Combine(path, dateCreated.Year.ToString(), dateCreated.ToString("MM"), dateCreated.ToString("dd"));
                     if (!System.IO.Directory.Exists(pathToCreate))
                     {
                         System.IO.Directory.CreateDirectory(pathToCreate);
                     }
-                    var fileNameNew = "Img_" + dateCreated.ToString("yyyyMMddHHmmss") + fileInfo.Extension;
+                    var fileNameNew = dateCreated.ToString("yyyyMMddHHmmss") + fileInfo.Extension;
                     string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
                     System.IO.File.Copy(sourceFile, destinationFile, true);
 
@@ -219,6 +211,41 @@ namespace FilesManager
                 }
             }
         }
+
+        private DateTime GetFileCreatedTimeFromExifData(string sourceFile)
+        {
+            DateTime dateTakenVar = new System.IO.FileInfo(sourceFile).CreationTime;
+            var directories = ImageMetadataReader.ReadMetadata(sourceFile);
+
+            // Find the EXIF IFD0 directory
+            var exifIfd0Directory = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+
+            // Alternatively, to directly find the EXIF SubIFD directory you can use:
+            // var exifSubIfdDirectory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
+            if (exifIfd0Directory != null)
+            {
+                // Attempt to retrieve the DateTimeOriginal value
+                if (exifIfd0Directory.TryGetDateTime(ExifDirectoryBase.TagDateTime, out DateTime dateTaken))
+                {
+                    return dateTaken;
+                }
+
+            }
+            return dateTakenVar;
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            FileprogressBar.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("Operation completed!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
     }
 }
 

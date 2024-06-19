@@ -34,9 +34,10 @@
             this.clmHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmDateCreated = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
             this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
+            this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.folderBrowserDlg = new System.Windows.Forms.FolderBrowserDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.toolStripMain.SuspendLayout();
@@ -88,26 +89,13 @@
             // 
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLblFilePath,
-            this.tStripBtnProceedToCopy});
+            this.tStripBtnProceedToCopy,
+            this.FileprogressBar});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Name = "toolStripMain";
             this.toolStripMain.Size = new System.Drawing.Size(1288, 25);
             this.toolStripMain.TabIndex = 1;
             this.toolStripMain.Text = "toolStrip1";
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.AllowDrop = true;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.listViewFiles);
-            this.splitContainer1.Size = new System.Drawing.Size(1288, 926);
-            this.splitContainer1.SplitterDistance = 429;
-            this.splitContainer1.TabIndex = 2;
             // 
             // toolStripLblFilePath
             // 
@@ -127,9 +115,33 @@
             this.tStripBtnProceedToCopy.Text = "Proceed";
             this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
             // 
+            // FileprogressBar
+            // 
+            this.FileprogressBar.Name = "FileprogressBar";
+            this.FileprogressBar.Size = new System.Drawing.Size(100, 22);
+            this.FileprogressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.AllowDrop = true;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 25);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.listViewFiles);
+            this.splitContainer1.Size = new System.Drawing.Size(1288, 926);
+            this.splitContainer1.SplitterDistance = 429;
+            this.splitContainer1.TabIndex = 2;
+            // 
             // backgroundWorker1
             // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // frmMain
             // 
@@ -163,6 +175,7 @@
         private System.Windows.Forms.ToolStripButton tStripBtnProceedToCopy;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDlg;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ToolStripProgressBar FileprogressBar;
     }
 }
 
