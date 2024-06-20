@@ -31,6 +31,8 @@
             this.lstViewProperties = new System.Windows.Forms.ListView();
             this.clmHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderValue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // lstViewProperties
@@ -43,7 +45,7 @@
             this.lstViewProperties.HideSelection = false;
             this.lstViewProperties.Location = new System.Drawing.Point(0, 0);
             this.lstViewProperties.Name = "lstViewProperties";
-            this.lstViewProperties.Size = new System.Drawing.Size(409, 913);
+            this.lstViewProperties.Size = new System.Drawing.Size(409, 902);
             this.lstViewProperties.TabIndex = 2;
             this.lstViewProperties.UseCompatibleStateImageBehavior = false;
             this.lstViewProperties.View = System.Windows.Forms.View.Details;
@@ -54,16 +56,18 @@
             // 
             // clmHeaderValue
             // 
-            this.clmHeaderValue.Text = "Value";
+            this.clmHeaderValue.Text = "Value";           
+            
             // 
             // frmProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(409, 913);
+            this.ClientSize = new System.Drawing.Size(409, 925);
             this.Controls.Add(this.lstViewProperties);
+            this.Controls.Add(this.progressBar1);
             this.Name = "frmProperties";
-            this.Text = "frmProperties";            
+            this.Text = "frmProperties";
             this.ResumeLayout(false);
 
         }
@@ -73,5 +77,7 @@
         private System.Windows.Forms.ListView lstViewProperties;
         private System.Windows.Forms.ColumnHeader clmHeaderName;
         private System.Windows.Forms.ColumnHeader clmHeaderValue;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

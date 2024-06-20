@@ -27,6 +27,7 @@ namespace FilesManager
             TreeNode rootNode = new TreeNode("Computer", 0, 0);
             rootNode.Tag = "Computer";
             trViewFolders.Nodes.Add(rootNode);
+            trViewFolders.SelectedNode = rootNode;
             foreach (var drive in System.IO.DriveInfo.GetDrives())
             {
                 TreeNode driveNode = new TreeNode(drive.Name, 1, 1);
@@ -46,7 +47,15 @@ namespace FilesManager
                 {
                     driveNode.Nodes.Clear();
                 }
-                foreach (var dir in System.IO.Directory.GetDirectories(name))
+                var directories = System.IO.Directory.GetDirectories(name);
+                if(directories.Length == 0)
+                {
+                    driveNode.ImageIndex = 5;
+                    driveNode.SelectedImageIndex = 5;
+                    return;
+                }
+                driveNode.Nodes.Clear();
+                foreach (var dir in directories)
                 {
                     TreeNode dirNode = new TreeNode(System.IO.Path.GetFileName(dir), 4, 4);
                     dirNode.Tag = dir;
@@ -66,12 +75,16 @@ namespace FilesManager
 
         private void trViewFolders_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-           
-            TreeNode node = trViewFolders.SelectedNode;
-            frmMain childForm = new frmMain(node.Tag.ToString());
-            childForm.Text =  node.Text.ToString();
-            childForm.Tag = node.Tag.ToString();
-            childForm.Show(this.DockPanel, dockState: WeifenLuo.WinFormsUI.Docking.DockState.Document);
+            try
+            {
+
+                TreeNode node = trViewFolders.SelectedNode;
+                frmMain childForm = new frmMain(node.Tag.ToString());
+                childForm.Text = node.Text.ToString();
+                childForm.Tag = node.Tag.ToString();
+                childForm.Show(this.DockPanel, dockState: WeifenLuo.WinFormsUI.Docking.DockState.Document);
+            }
+            catch { }
         }
     }
 }

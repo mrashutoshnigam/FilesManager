@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Shell32;
+using static System.Environment;
 
 namespace FilesManager
 {
@@ -49,8 +51,8 @@ namespace FilesManager
                     var listViewItem = new ListViewItem(directoryInfo.Name);
                     listViewItem.Tag = directory;
                     listViewItem.SubItems.Add("Folder"); // Type
-                    //listViewItem.SubItems.Add(GetDirectorySize(directory).ToString()); // Size in bytes
-                    listViewItem.SubItems.Add(directoryInfo.CreationTime.Date.ToString("d"));
+                    listViewItem.SubItems.Add("");//GetDirectorySize(directory).ToString()); // Size in bytes
+                    listViewItem.SubItems.Add(directoryInfo.CreationTime.ToString("dd-MM-yyyy HH:mm:ss tt"));
                     listViewFiles.Items.Add(listViewItem);
                 }
 
@@ -64,9 +66,10 @@ namespace FilesManager
                     listViewItem.Tag = file;
                     listViewItem.SubItems.Add(fileInfo.Extension); // File type
                     listViewItem.SubItems.Add(fileInfo.Length.ToString()); // Size in bytes
-                    listViewItem.SubItems.Add(fileInfo.CreationTime.Date.ToString("d"));
+                    listViewItem.SubItems.Add(fileInfo.CreationTime.ToString("dd-MM-yyyy HH:mm:ss tt"));
                     listViewFiles.Items.Add(listViewItem);
                 }
+                listViewFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
             catch (Exception ex)
             {
@@ -130,16 +133,20 @@ namespace FilesManager
 
         private void tStripBtnProceedToCopy_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDlg.ShowDialog() == DialogResult.OK)
+            if (System.IO.Directory.Exists(txtBoxDestination.Text))
             {
                 filesList.Clear();
-                string path = folderBrowserDlg.SelectedPath;
+                string path = txtBoxDestination.Text;
                 // Prepare the BackgroundWorker to run the copy operation
                 if (!backgroundWorker1.IsBusy)
                 {
                     // Pass the selected path as an argument
                     backgroundWorker1.RunWorkerAsync(path);
                 }
+            }
+            else
+            {
+               MessageBox.Show("Destination path does not exist!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -201,7 +208,7 @@ namespace FilesManager
                     {
                         System.IO.Directory.CreateDirectory(pathToCreate);
                     }
-                    var fileNameNew = dateCreated.ToString("yyyyMMddHHmmss") + fileInfo.Extension;
+                    var fileNameNew = dateCreated.ToString("yyyyMMddHHmmssfff") + fileInfo.Extension;
                     string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
                     System.IO.File.Copy(sourceFile, destinationFile, true);
 
@@ -245,7 +252,26 @@ namespace FilesManager
             MessageBox.Show("Operation completed!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                folderBrowserDlg.SelectedPath = txtBoxDestination.Text;
+            }
+            catch
+            {
+                folderBrowserDlg.SelectedPath = Environment.GetFolderPath(SpecialFolder.MyPictures);
+            }
+            if (folderBrowserDlg.ShowDialog() == DialogResult.OK)
+            {
+                txtBoxDestination.Text = folderBrowserDlg.SelectedPath;
+            }
+        }
 
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+            txtBoxDestination.Text = Environment.GetFolderPath(SpecialFolder.MyPictures);
+        }
     }
 }
 

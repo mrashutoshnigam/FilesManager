@@ -74,9 +74,12 @@ namespace FilesManager
                 {
                     if (iptcDirectory != null)
                     {
+                        // ListView Group by iptcDirectory.Name
+                        ListViewGroup group = new ListViewGroup(iptcDirectory.Name, HorizontalAlignment.Left);
+                        lstViewProperties.Groups.Add(group);
                         foreach (var tag in iptcDirectory.Tags)
                         {
-                            lstViewProperties.Items.Add(new ListViewItem(new[] { tag.Name, tag.Description }));
+                            lstViewProperties.Items.Add(new ListViewItem(new[] { tag.Name, tag.Description }, group));
                             Console.WriteLine($"{tag.Name}: {tag.Description}");
                         }
                     }
@@ -85,6 +88,7 @@ namespace FilesManager
                         Console.WriteLine("No IPTC data found.");
                     }
                 }
+                lstViewProperties.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
             catch (Exception ex)
             {
@@ -126,5 +130,7 @@ namespace FilesManager
                 MessageBox.Show($"Error reading metadata: {ex.Message}");
             }
         }
+
+        
     }
 }

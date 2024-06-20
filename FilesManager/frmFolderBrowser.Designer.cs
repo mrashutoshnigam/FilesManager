@@ -56,6 +56,7 @@
             this.imageLst.Images.SetKeyName(2, "USB Connected.png");
             this.imageLst.Images.SetKeyName(3, "Opened Folder.png");
             this.imageLst.Images.SetKeyName(4, "Folder.png");
+            this.imageLst.Images.SetKeyName(5, "Delete Folder.png");
             // 
             // frmFolderBrowser
             // 
