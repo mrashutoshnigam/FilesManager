@@ -44,6 +44,7 @@
             this.trViewFolders.SelectedImageIndex = 0;
             this.trViewFolders.Size = new System.Drawing.Size(357, 884);
             this.trViewFolders.TabIndex = 0;
+            this.trViewFolders.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.trViewFolders_BeforeExpand);
             this.trViewFolders.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.trViewFolders_AfterExpand);
             this.trViewFolders.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.trViewFolders_MouseDoubleClick);
             // 

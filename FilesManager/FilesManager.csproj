@@ -33,12 +33,55 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ComponentFactory.Krypton.Toolkit">
+      <HintPath>..\..\..\Krypton\Bin\ComponentFactory.Krypton.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="MetadataExtractor, Version=2.8.1.0, Culture=neutral, PublicKeyToken=b66b5ccaf776c301, processorArchitecture=MSIL">
       <HintPath>..\packages\MetadataExtractor.2.8.1\lib\net45\MetadataExtractor.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Barcode, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Chart, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Chart.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Diagram, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Diagram.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.GraphicsGL, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.GraphicsGL.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Grid, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Host.WinBase, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Host.WinBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Host.WinForm, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Host.WinForm.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Host.Wpf, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Host.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Presentation, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Presentation.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Schedule, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Schedule.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.Text, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.WinFormControls, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.WinFormControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.Nov.WpfControls, Version=24.6.3.12, Culture=neutral, PublicKeyToken=b33b1a04bb5ca8ad, processorArchitecture=MSIL">
+      <HintPath>..\packages\NevronOpenVision.24.6.3.12\lib\net472\Nevron.Nov.WpfControls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />

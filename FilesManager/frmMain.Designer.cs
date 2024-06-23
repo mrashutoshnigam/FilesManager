@@ -39,21 +39,35 @@
             this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
             this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkIncludeSubFolders = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBoxFileTypes = new ComponentFactory.Krypton.Toolkit.KryptonComboBox();
+            this.kryptonBreadCrumb1 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumb();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnBrowse = new System.Windows.Forms.Button();
+            this.cBoxPathFormat = new System.Windows.Forms.ComboBox();
+            this.kryptonBreadCrumbItem1 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem6 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem2 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem3 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem4 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem5 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.folderBrowserDlg = new System.Windows.Forms.FolderBrowserDialog();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cBoxPathFormat = new System.Windows.Forms.ComboBox();
-            this.txtBoxDestination = new System.Windows.Forms.TextBox();
-            this.btnBrowse = new System.Windows.Forms.Button();
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -97,6 +111,7 @@
             // 
             // toolStripMain
             // 
+            this.toolStripMain.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLblFilePath,
             this.tStripBtnProceedToCopy,
@@ -150,68 +165,73 @@
             this.splitContainer1.SplitterDistance = 429;
             this.splitContainer1.TabIndex = 2;
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.WorkerReportsProgress = true;
-            this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkIncludeFileName);
+            this.groupBox1.Controls.Add(this.checkIncludeSubFolders);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.comboBoxFileTypes);
+            this.groupBox1.Controls.Add(this.kryptonBreadCrumb1);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnBrowse);
-            this.groupBox1.Controls.Add(this.txtBoxDestination);
             this.groupBox1.Controls.Add(this.cBoxPathFormat);
             this.groupBox1.Location = new System.Drawing.Point(30, 14);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(798, 93);
+            this.groupBox1.Size = new System.Drawing.Size(798, 157);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Destination Path";
             // 
-            // cBoxPathFormat
+            // checkIncludeSubFolders
             // 
-            this.cBoxPathFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cBoxPathFormat.FormattingEnabled = true;
-            this.cBoxPathFormat.Items.AddRange(new object[] {
-            "Year",
-            "Year/Month",
-            "Year/Month/Date",
-            "Year/File Types/",
-            "Year/Month/File Types",
-            "File Types",
-            "File Types/Year",
-            "File Types/Year/Month"});
-            this.cBoxPathFormat.Location = new System.Drawing.Point(153, 53);
-            this.cBoxPathFormat.Name = "cBoxPathFormat";
-            this.cBoxPathFormat.Size = new System.Drawing.Size(230, 21);
-            this.cBoxPathFormat.TabIndex = 0;
+            this.checkIncludeSubFolders.AutoSize = true;
+            this.checkIncludeSubFolders.Location = new System.Drawing.Point(514, 65);
+            this.checkIncludeSubFolders.Name = "checkIncludeSubFolders";
+            this.checkIncludeSubFolders.Size = new System.Drawing.Size(120, 17);
+            this.checkIncludeSubFolders.TabIndex = 8;
+            this.checkIncludeSubFolders.Text = "Include Sub Folders";
+            this.checkIncludeSubFolders.UseVisualStyleBackColor = true;
             // 
-            // txtBoxDestination
+            // label3
             // 
-            this.txtBoxDestination.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.txtBoxDestination.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-            this.txtBoxDestination.Location = new System.Drawing.Point(153, 23);
-            this.txtBoxDestination.Name = "txtBoxDestination";
-            this.txtBoxDestination.Size = new System.Drawing.Size(230, 20);
-            this.txtBoxDestination.TabIndex = 1;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 104);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "File Types";
             // 
-            // btnBrowse
+            // comboBoxFileTypes
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(399, 22);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(50, 23);
-            this.btnBrowse.TabIndex = 2;
-            this.btnBrowse.Text = "Browse";
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            this.comboBoxFileTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFileTypes.DropDownWidth = 230;
+            this.comboBoxFileTypes.Location = new System.Drawing.Point(153, 96);
+            this.comboBoxFileTypes.Name = "comboBoxFileTypes";
+            this.comboBoxFileTypes.Size = new System.Drawing.Size(230, 21);
+            this.comboBoxFileTypes.TabIndex = 6;
             // 
-            // visualStudioToolStripExtender1
+            // kryptonBreadCrumb1
             // 
-            this.visualStudioToolStripExtender1.DefaultRenderer = null;
+            this.kryptonBreadCrumb1.AutoSize = false;
+            this.kryptonBreadCrumb1.Location = new System.Drawing.Point(153, 19);
+            this.kryptonBreadCrumb1.Name = "kryptonBreadCrumb1";
+            // 
+            // 
+            // 
+            this.kryptonBreadCrumb1.RootItem.ShortText = "Root";
+            this.kryptonBreadCrumb1.SelectedItem = this.kryptonBreadCrumb1.RootItem;
+            this.kryptonBreadCrumb1.Size = new System.Drawing.Size(565, 28);
+            this.kryptonBreadCrumb1.TabIndex = 5;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 68);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(138, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Destination Folder Structure";
             // 
             // label1
             // 
@@ -222,14 +242,96 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Destination Path";
             // 
-            // label2
+            // btnBrowse
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 56);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(138, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Destination Folder Structure";
+            this.btnBrowse.Location = new System.Drawing.Point(724, 19);
+            this.btnBrowse.Name = "btnBrowse";
+            this.btnBrowse.Size = new System.Drawing.Size(50, 28);
+            this.btnBrowse.TabIndex = 2;
+            this.btnBrowse.Text = "Browse";
+            this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            // 
+            // cBoxPathFormat
+            // 
+            this.cBoxPathFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cBoxPathFormat.FormattingEnabled = true;
+            this.cBoxPathFormat.Items.AddRange(new object[] {
+            "Year/",
+            "Year/Month/",
+            "Year/Month/Day/",
+            "Year/File Types/",
+            "Year/Month/File Types/",
+            "Year/Month/Day/File Types/",
+            "File Types/",
+            "File Types/Year/",
+            "File Types/Year/Month/"});
+            this.cBoxPathFormat.Location = new System.Drawing.Point(153, 65);
+            this.cBoxPathFormat.Name = "cBoxPathFormat";
+            this.cBoxPathFormat.Size = new System.Drawing.Size(230, 21);
+            this.cBoxPathFormat.TabIndex = 0;
+            // 
+            // kryptonBreadCrumbItem1
+            // 
+            this.kryptonBreadCrumbItem1.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem[] {
+            this.kryptonBreadCrumbItem6});
+            this.kryptonBreadCrumbItem1.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem6
+            // 
+            this.kryptonBreadCrumbItem6.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem2
+            // 
+            this.kryptonBreadCrumbItem2.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem[] {
+            this.kryptonBreadCrumbItem3});
+            this.kryptonBreadCrumbItem2.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem3
+            // 
+            this.kryptonBreadCrumbItem3.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem[] {
+            this.kryptonBreadCrumbItem4});
+            this.kryptonBreadCrumbItem3.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem4
+            // 
+            this.kryptonBreadCrumbItem4.Items.AddRange(new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem[] {
+            this.kryptonBreadCrumbItem5});
+            this.kryptonBreadCrumbItem4.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem5
+            // 
+            this.kryptonBreadCrumbItem5.ShortText = "ListItem";
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // visualStudioToolStripExtender1
+            // 
+            this.visualStudioToolStripExtender1.DefaultRenderer = null;
+            // 
+            // kryptonBreadCrumbItem7
+            // 
+            this.kryptonBreadCrumbItem7.ShortText = "ListItem";
+            // 
+            // kryptonBreadCrumbItem8
+            // 
+            this.kryptonBreadCrumbItem8.ShortText = "ListItem";
+            // 
+            // chkIncludeFileName
+            // 
+            this.chkIncludeFileName.AutoSize = true;
+            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 96);
+            this.chkIncludeFileName.Name = "chkIncludeFileName";
+            this.chkIncludeFileName.Size = new System.Drawing.Size(149, 17);
+            this.chkIncludeFileName.TabIndex = 9;
+            this.chkIncludeFileName.Text = "Include Original File Name";
+            this.chkIncludeFileName.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -248,6 +350,8 @@
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,10 +374,22 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox cBoxPathFormat;
         private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.TextBox txtBoxDestination;
         private WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender visualStudioToolStripExtender1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem1;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem6;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem2;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem3;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem4;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem5;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem7;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem kryptonBreadCrumbItem8;
+        private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumb kryptonBreadCrumb1;
+        private System.Windows.Forms.Label label3;
+        private ComponentFactory.Krypton.Toolkit.KryptonComboBox comboBoxFileTypes;
+        private System.Windows.Forms.CheckBox checkIncludeSubFolders;
+        private System.Windows.Forms.CheckBox chkIncludeFileName;
     }
 }
 

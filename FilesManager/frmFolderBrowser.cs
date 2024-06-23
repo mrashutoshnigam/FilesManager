@@ -24,31 +24,33 @@ namespace FilesManager
 
         private void LoadDrives()
         {
-            TreeNode rootNode = new TreeNode("Computer", 0, 0);
-            rootNode.Tag = "Computer";
-            trViewFolders.Nodes.Add(rootNode);
-            trViewFolders.SelectedNode = rootNode;
-            foreach (var drive in System.IO.DriveInfo.GetDrives())
+            foreach (var drive in System.IO.DriveInfo.GetDrives().Where(x => x.DriveType == System.IO.DriveType.Fixed))
             {
                 TreeNode driveNode = new TreeNode(drive.Name, 1, 1);
                 driveNode.Tag = drive.Name;
-                rootNode.Nodes.Add(driveNode);
+                trViewFolders.Nodes.Add(driveNode);
                 TreeNode dummyTreeNode = new TreeNode("dummy", 4, 4);
                 driveNode.Nodes.Add(dummyTreeNode);
             }
-            rootNode.Expand();
+            if (trViewFolders.Nodes.Count > 0)
+            {
+                trViewFolders.Nodes[0].Expand();
+                trViewFolders.SelectedNode = trViewFolders.Nodes[0];
+            }
+
         }
 
         private void LoadDirectories(string name, TreeNode driveNode)
         {
             try
             {
+                var specialFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (driveNode.Nodes.Count == 1 && driveNode.Nodes[0].Text == "dummy")
                 {
                     driveNode.Nodes.Clear();
                 }
                 var directories = System.IO.Directory.GetDirectories(name);
-                if(directories.Length == 0)
+                if (directories.Length == 0)
                 {
                     driveNode.ImageIndex = 5;
                     driveNode.SelectedImageIndex = 5;
@@ -60,8 +62,19 @@ namespace FilesManager
                     TreeNode dirNode = new TreeNode(System.IO.Path.GetFileName(dir), 4, 4);
                     dirNode.Tag = dir;
                     driveNode.Nodes.Add(dirNode);
-                    TreeNode dummyTreeNode = new TreeNode("dummy", 4, 4);
-                    dirNode.Nodes.Add(dummyTreeNode);
+                    if (specialFolderPath.Contains(dir))
+                    {
+                        TreeNode dummyTreeNode = new TreeNode("dummy", 4, 4);
+                        dirNode.Nodes.Add(dummyTreeNode);
+                        dirNode.Expand();
+                    }
+                    else
+                    {
+                        TreeNode dummyTreeNode = new TreeNode("dummy", 4, 4);
+                        dirNode.Nodes.Add(dummyTreeNode);
+                    }
+
+
                 }
             }
             catch { }
@@ -85,6 +98,11 @@ namespace FilesManager
                 childForm.Show(this.DockPanel, dockState: WeifenLuo.WinFormsUI.Docking.DockState.Document);
             }
             catch { }
+        }
+
+        private void trViewFolders_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+
         }
     }
 }
