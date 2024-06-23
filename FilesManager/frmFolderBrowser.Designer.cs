@@ -67,7 +67,11 @@
             this.CloseButton = false;
             this.CloseButtonVisible = false;
             this.Controls.Add(this.trViewFolders);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmFolderBrowser";
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "frmFolderBrowser";
             this.ResumeLayout(false);
 

@@ -16,6 +16,7 @@ using static System.Environment;
 using ComponentFactory.Krypton.Toolkit;
 using System.IO;
 using System.Globalization;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FilesManager
 {
@@ -57,7 +58,8 @@ namespace FilesManager
             this.destinationPath = Environment.GetFolderPath(SpecialFolder.MyPictures);
             SelectedBreadCrumb(Environment.GetFolderPath(SpecialFolder.MyPictures));
             GroupFilesByType(directoryPath);
-            checkIncludeSubFolders.Checked = true;
+            chkIncludeSubFolders.Checked = false;
+            cBoxPathFormat.SelectedIndex = 2;
         }
 
         private void loadFiles(string directoryPath)
@@ -203,7 +205,7 @@ namespace FilesManager
             {
                 string[] directories = System.IO.Directory.GetDirectories(path);
 
-                if (checkIncludeSubFolders.Checked)
+                if (chkIncludeSubFolders.Checked)
                 {
                     foreach (string directory in directories)
                     {
@@ -425,6 +427,10 @@ namespace FilesManager
 
             // Get all files in the folderPath
             var files = System.IO.Directory.GetFiles(folderPath);
+            if (chkIncludeSubFolders.Checked)
+            {
+                files = System.IO.Directory.GetFiles(folderPath, "*.*", System.IO.SearchOption.AllDirectories);
+            }
 
             // Iterate over each file and increment the count for its group
             foreach (var file in files)
@@ -458,6 +464,72 @@ namespace FilesManager
                     comboBoxFileTypes.Items.Add($"{groupCount.Key} ({groupCount.Value})");
                 }
             }
+            // Existing code to calculate groupCounts...
+
+            // Clear existing series and chart areas
+            chrtControl.Series.Clear();
+
+            chrtControl.ChartAreas.Clear();
+
+            // Create and add a chart area
+            ChartArea chartArea = new ChartArea();
+            chrtControl.ChartAreas.Add(chartArea);
+
+            // Create a series for displaying counts
+            Series series = new Series("File Groups")
+            {
+                ChartType = SeriesChartType.Column, // Use Column chart type for displaying counts
+                IsValueShownAsLabel = true // Display the value (count) as a label on the bar              
+            };
+
+            // Add data points to the series
+            int pointIndex = 0;
+            foreach (var groupCount in groupCounts)
+            {
+                if (groupCount.Value > 0)
+                {
+                    // Add a data point for each group
+                    pointIndex = series.Points.AddY(groupCount.Value);
+                    series.Points[pointIndex].Color = GetUniqueColor(pointIndex); // Assign a unique color
+                    series.Points[pointIndex].AxisLabel = groupCount.Key; // Set the axis label to the group name
+                    series.Points[pointIndex].Label = $"{groupCount.Key}-{groupCount.Value}"; // Display the count as a label on the bar
+                    //series.Points[pointIndex].LegendText = groupCount.Key; // Set the legend text
+                    series.Points[pointIndex].ToolTip = $"{groupCount.Key}: {groupCount.Value}"; // Set the tooltip text
+                    //series.Points[pointIndex].Tag = groupCount.Key; // Store the group name in the Tag property
+
+                    // Customize label appearance
+                    series.Points[pointIndex].LabelForeColor = Color.Black; // Set label text color
+                    series.Points[pointIndex].LabelBackColor = Color.Transparent; // Set label background                   
+                }
+            }
+            
+            // Add the series to the chart
+            chrtControl.Series.Add(series);
+
+            // Optionally, customize the chart (e.g., Axis titles)
+            chrtControl.ChartAreas[0].AxisX.Title = "File Groups";
+            chrtControl.ChartAreas[0].AxisY.Title = "Files Counts";
+
+            // Refresh the chart to display the updated data
+            chrtControl.Invalidate();
+        }
+
+        // Helper method to generate a unique color based on an index
+        private Color GetUniqueColor(int index)
+        {
+            // Predefined colors or generate dynamically for larger datasets
+            Color[] colors = new Color[] {        Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Orange,
+        Color.Purple, Color.Cyan, Color.Magenta, Color.Brown, Color.Olive, Color.AliceBlue, Color.AntiqueWhite, Color.Aqua, Color.Aquamarine, Color.Azure,
+        Color.Beige, Color.Bisque, Color.Black, Color.BlanchedAlmond, Color.BlueViolet, Color.BurlyWood, Color.CadetBlue, Color.Chartreuse, Color.Chocolate,
+    };
+
+            // Return a color based on the index
+            return colors[index % colors.Length];
+        }
+
+        private void chkIncludeSubFolders_CheckedChanged(object sender, EventArgs e)
+        {
+            GroupFilesByType(this.directoryPath);
         }
     }
 }

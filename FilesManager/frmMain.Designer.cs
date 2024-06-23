@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.clmHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -40,7 +43,8 @@
             this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkIncludeSubFolders = new System.Windows.Forms.CheckBox();
+            this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
+            this.chkIncludeSubFolders = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxFileTypes = new ComponentFactory.Krypton.Toolkit.KryptonComboBox();
             this.kryptonBreadCrumb1 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumb();
@@ -59,7 +63,7 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
-            this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
+            this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -68,6 +72,7 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -159,6 +164,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.chrtControl);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
             this.splitContainer1.Size = new System.Drawing.Size(1288, 926);
@@ -168,7 +174,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.chkIncludeFileName);
-            this.groupBox1.Controls.Add(this.checkIncludeSubFolders);
+            this.groupBox1.Controls.Add(this.chkIncludeSubFolders);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.comboBoxFileTypes);
             this.groupBox1.Controls.Add(this.kryptonBreadCrumb1);
@@ -183,15 +189,26 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Destination Path";
             // 
-            // checkIncludeSubFolders
+            // chkIncludeFileName
             // 
-            this.checkIncludeSubFolders.AutoSize = true;
-            this.checkIncludeSubFolders.Location = new System.Drawing.Point(514, 65);
-            this.checkIncludeSubFolders.Name = "checkIncludeSubFolders";
-            this.checkIncludeSubFolders.Size = new System.Drawing.Size(120, 17);
-            this.checkIncludeSubFolders.TabIndex = 8;
-            this.checkIncludeSubFolders.Text = "Include Sub Folders";
-            this.checkIncludeSubFolders.UseVisualStyleBackColor = true;
+            this.chkIncludeFileName.AutoSize = true;
+            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 96);
+            this.chkIncludeFileName.Name = "chkIncludeFileName";
+            this.chkIncludeFileName.Size = new System.Drawing.Size(149, 17);
+            this.chkIncludeFileName.TabIndex = 9;
+            this.chkIncludeFileName.Text = "Include Original File Name";
+            this.chkIncludeFileName.UseVisualStyleBackColor = true;
+            // 
+            // chkIncludeSubFolders
+            // 
+            this.chkIncludeSubFolders.AutoSize = true;
+            this.chkIncludeSubFolders.Location = new System.Drawing.Point(514, 65);
+            this.chkIncludeSubFolders.Name = "chkIncludeSubFolders";
+            this.chkIncludeSubFolders.Size = new System.Drawing.Size(120, 17);
+            this.chkIncludeSubFolders.TabIndex = 8;
+            this.chkIncludeSubFolders.Text = "Include Sub Folders";
+            this.chkIncludeSubFolders.UseVisualStyleBackColor = true;
+            this.chkIncludeSubFolders.CheckedChanged += new System.EventHandler(this.chkIncludeSubFolders_CheckedChanged);
             // 
             // label3
             // 
@@ -323,15 +340,23 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
-            // chkIncludeFileName
+            // chrtControl
             // 
-            this.chkIncludeFileName.AutoSize = true;
-            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 96);
-            this.chkIncludeFileName.Name = "chkIncludeFileName";
-            this.chkIncludeFileName.Size = new System.Drawing.Size(149, 17);
-            this.chkIncludeFileName.TabIndex = 9;
-            this.chkIncludeFileName.Text = "Include Original File Name";
-            this.chkIncludeFileName.UseVisualStyleBackColor = true;
+            this.chrtControl.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDot;
+            chartArea2.Name = "ChartArea1";
+            this.chrtControl.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chrtControl.Legends.Add(legend2);
+            this.chrtControl.Location = new System.Drawing.Point(30, 193);
+            this.chrtControl.Name = "chrtControl";
+            this.chrtControl.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chrtControl.Series.Add(series2);
+            this.chrtControl.Size = new System.Drawing.Size(798, 558);
+            this.chrtControl.TabIndex = 1;
+            this.chrtControl.Text = "chart1";
             // 
             // frmMain
             // 
@@ -342,6 +367,7 @@
             this.Controls.Add(this.toolStripMain);
             this.Name = "frmMain";
             this.Text = "Main Form";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -352,6 +378,7 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -388,8 +415,9 @@
         private ComponentFactory.Krypton.Toolkit.KryptonBreadCrumb kryptonBreadCrumb1;
         private System.Windows.Forms.Label label3;
         private ComponentFactory.Krypton.Toolkit.KryptonComboBox comboBoxFileTypes;
-        private System.Windows.Forms.CheckBox checkIncludeSubFolders;
+        private System.Windows.Forms.CheckBox chkIncludeSubFolders;
         private System.Windows.Forms.CheckBox chkIncludeFileName;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chrtControl;
     }
 }
 
