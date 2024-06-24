@@ -282,7 +282,7 @@ namespace FilesManager
                         System.IO.Directory.CreateDirectory(pathToCreate);
                     }                  
 
-                    if (IsGooglePhotosMetaDataChecked)
+                    if (IsGooglePhotosMetaDataChecked && fileGroup == "Images")
                     {
                         if (googlePhotosDictionary.TryGetValue(fileInfo.Name + ".json", out GooglePhoto googlePhoto))
                         {

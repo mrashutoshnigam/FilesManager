@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.clmHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -157,18 +157,18 @@
             // chrtControl
             // 
             this.chrtControl.BorderlineWidth = 0;
-            chartArea4.Name = "ChartArea1";
-            this.chrtControl.ChartAreas.Add(chartArea4);
+            chartArea5.Name = "ChartArea1";
+            this.chrtControl.ChartAreas.Add(chartArea5);
             this.chrtControl.IsSoftShadows = false;
-            legend4.Name = "Legend1";
-            this.chrtControl.Legends.Add(legend4);
+            legend5.Name = "Legend1";
+            this.chrtControl.Legends.Add(legend5);
             this.chrtControl.Location = new System.Drawing.Point(30, 193);
             this.chrtControl.Name = "chrtControl";
             this.chrtControl.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series4.ChartArea = "ChartArea1";
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.chrtControl.Series.Add(series4);
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.chrtControl.Series.Add(series5);
             this.chrtControl.Size = new System.Drawing.Size(798, 558);
             this.chrtControl.TabIndex = 1;
             this.chrtControl.Text = "chart1";
