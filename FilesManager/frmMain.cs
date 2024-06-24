@@ -17,15 +17,27 @@ using ComponentFactory.Krypton.Toolkit;
 using System.IO;
 using System.Globalization;
 using System.Windows.Forms.DataVisualization.Charting;
+using FilesManager.GooglePhotos;
+using Newtonsoft.Json;
+using FilesManager.Models;
+using Nevron.Nov.Graphics;
+using ExifLibrary;
+using ImageMagick;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace FilesManager
 {
     public partial class frmMain : DockContent
     {
         frmProperties frmProperties;
+        frmErrorWindow frmErrorWindow;
+        List<ErrorModel> errors;
         List<Dictionary<string, string>> filesList;
         string directoryPath;
         string destinationPath;
+        Dictionary<string, GooglePhoto> googlePhotosDictionary;
+        string selectedFileTypeFromCheckBox;
+        bool IsGooglePhotosMetaDataChecked = false;
         Dictionary<string, List<string>> fileTypeGroups = new Dictionary<string, List<string>>
         {
             { "Images", new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"} },
@@ -46,12 +58,14 @@ namespace FilesManager
             this.directoryPath = directoryPath;
             this.Load += new EventHandler(frmMain_Load);
             filesList = new List<Dictionary<string, string>>();
+
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+
             frmProperties = new frmProperties();
-            frmProperties.Show(this.DockPanel, dockState: DockState.DockRight);
+            frmProperties.Show(this.DockPanel, dockState: DockState.DockRightAutoHide);
             toolStripLblFilePath.Text = directoryPath;
             loadFiles(directoryPath);
             listViewFiles.ListViewItemSorter = new ListViewItemComparer(0, SortOrder.Ascending);
@@ -60,6 +74,12 @@ namespace FilesManager
             GroupFilesByType(directoryPath);
             chkIncludeSubFolders.Checked = false;
             cBoxPathFormat.SelectedIndex = 2;
+            errors = new List<ErrorModel>();
+            frmErrorWindow = new frmErrorWindow();
+            frmErrorWindow.ErrorModelList = errors;
+            frmErrorWindow.Show(this.DockPanel, dockState: DockState.DockBottomAutoHide);
+            frmErrorWindow.AutoHidePortion = 150;
+            googlePhotosDictionary = LoadGooglePhotosJsonFiles(directoryPath);
         }
 
         private void loadFiles(string directoryPath)
@@ -169,6 +189,7 @@ namespace FilesManager
                 // Prepare the BackgroundWorker to run the copy operation
                 if (!backgroundWorker1.IsBusy)
                 {
+                    EnableDisableAllControls();
                     // Pass the selected path as an argument
                     backgroundWorker1.RunWorkerAsync(new object[] { path, selectedFormat, selectedFileGroup });
                 }
@@ -183,14 +204,22 @@ namespace FilesManager
         {
             try
             {
-                string[] files = System.IO.Directory.GetFiles(path);
-                foreach (string file in files)
+                var selectedFileTypeWithCount = this.selectedFileTypeFromCheckBox;
+                var selectedFileType = selectedFileTypeWithCount.Substring(0, selectedFileTypeWithCount.LastIndexOf(" (")).Trim();
+                if (fileTypeGroups.TryGetValue(selectedFileType, out List<string> fileExtensions))
                 {
-                    this.filesList.Add(new Dictionary<string, string>
+                    foreach (var fileExtension in fileExtensions)
                     {
-                        { "Name", System.IO.Path.GetFileName(file) },
-                        { "Path", file }
-                    });
+                        string[] files = System.IO.Directory.GetFiles(path, "*" + fileExtension, SearchOption.TopDirectoryOnly);
+                        foreach (string file in files)
+                        {
+                            this.filesList.Add(new Dictionary<string, string>
+                        {
+                            { "Name", System.IO.Path.GetFileName(file) },
+                            { "Path", file }
+                        });
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -227,11 +256,13 @@ namespace FilesManager
             string path = args[0].ToString();
             string selectedFormat = (string)args[1];
             string selectedFileGroup = (string)args[2];
+           
             this.filesList.Clear();
             ListAllDirectories(toolStripLblFilePath.Text);
 
             int totalFiles = filesList.Count;
             int processedFiles = 0;
+            var fileGroup = this.selectedFileTypeFromCheckBox.Substring(0, this.selectedFileTypeFromCheckBox.LastIndexOf(" (")).Trim();
 
             foreach (var file in filesList)
             {
@@ -241,34 +272,57 @@ namespace FilesManager
                 {
                     var dateCreated = GetFileCreatedTimeFromExifData(sourceFile);
                     string fileType = fileInfo.Extension.ToLower();
-                    var fileGroup = fileTypeGroups.FirstOrDefault(g => g.Value.Contains(fileType)).Key;
-                    if (fileGroup != null && selectedFileGroup.Contains(fileGroup))
+
+                    // Dynamically construct the path based on the selected format
+                    var pathToCreate = ConstructPathBasedOnFormat(path, dateCreated, fileGroup, selectedFormat);
+
+                    // var pathToCreate = System.IO.Path.Combine(path, dateCreated.Year.ToString(), dateCreated.ToString("MM"), dateCreated.ToString("dd"));
+                    if (!System.IO.Directory.Exists(pathToCreate))
                     {
-                        var titleCaseFileGroup = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(fileGroup.ToLower());
+                        System.IO.Directory.CreateDirectory(pathToCreate);
+                    }                  
 
-                        // Dynamically construct the path based on the selected format
-                        var pathToCreate = ConstructPathBasedOnFormat(path, dateCreated, titleCaseFileGroup, selectedFormat);
-
-                        // var pathToCreate = System.IO.Path.Combine(path, dateCreated.Year.ToString(), dateCreated.ToString("MM"), dateCreated.ToString("dd"));
-                        if (!System.IO.Directory.Exists(pathToCreate))
+                    if (IsGooglePhotosMetaDataChecked)
+                    {
+                        if (googlePhotosDictionary.TryGetValue(fileInfo.Name + ".json", out GooglePhoto googlePhoto))
                         {
-                            System.IO.Directory.CreateDirectory(pathToCreate);
+                            var dateCreatedGPhotos = googlePhoto.CreationTime;
+                            var geoData = googlePhoto.GeoData;
+                            if (geoData != null)
+                            {
+                                AddGeoDataToImageIfAbsent(fileInfo.FullName, geoData.Latitude, geoData.Longitude);
+                            }
+                            if (googlePhoto.People != null && googlePhoto.People.Count > 0)
+                            {
+                                AddPeopleNamesToImageIPTC(fileInfo.FullName, googlePhoto.People.Select(p => p.Name).ToList());
+                            }
+                            if (dateCreated.Date == DateTime.Now.Date)
+                            {                              
+                                try
+                                {
+                                    DateTime result = DateTime.Parse(googlePhoto.PhotoTakenTime.Formatted.Replace("UTC", "").Trim());
+                                    dateCreated = result;
+                                }
+                                catch { }
+                            }
                         }
-                        var fileNameNew = dateCreated.ToString("yyyyMMddHHmmssfff");
-                        if (chkIncludeFileName.Checked) // Assuming includeFileName is accessible here
-                        {
-                            fileNameNew += "_" + fileInfo.Name;
-                        }
-                        fileNameNew += fileInfo.Extension;
-                        string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
-                        System.IO.File.Copy(sourceFile, destinationFile, true);
 
-                        processedFiles++;
-                        int progressPercentage = (int)((float)processedFiles / (float)totalFiles * 100);
-                        backgroundWorker1.ReportProgress(progressPercentage);
                     }
+                    var fileNameNew = dateCreated.ToString("yyyyMMddHHmmssfff");
+                    if (chkIncludeFileName.Checked) // Assuming includeFileName is accessible here
+                    {
+                        fileNameNew += "_" + fileInfo.Name;
+                    }
+                    fileNameNew += fileInfo.Extension;
+                    string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
+                    System.IO.File.Copy(sourceFile, destinationFile, true);
+
+                    processedFiles++;
+                    int progressPercentage = (int)((float)processedFiles / (float)totalFiles * 100);
+                    backgroundWorker1.ReportProgress(progressPercentage);
                 }
             }
+           
         }
 
         private string ConstructPathBasedOnFormat(string basePath, DateTime dateCreated, string fileType, string selectedFormat)
@@ -362,6 +416,7 @@ namespace FilesManager
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             MessageBox.Show("Operation completed!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            EnableDisableAllControls();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -493,16 +548,16 @@ namespace FilesManager
                     series.Points[pointIndex].Color = GetUniqueColor(pointIndex); // Assign a unique color
                     series.Points[pointIndex].AxisLabel = groupCount.Key; // Set the axis label to the group name
                     series.Points[pointIndex].Label = $"{groupCount.Key}-{groupCount.Value}"; // Display the count as a label on the bar
-                    //series.Points[pointIndex].LegendText = groupCount.Key; // Set the legend text
+                                                                                              //series.Points[pointIndex].LegendText = groupCount.Key; // Set the legend text
                     series.Points[pointIndex].ToolTip = $"{groupCount.Key}: {groupCount.Value}"; // Set the tooltip text
-                    //series.Points[pointIndex].Tag = groupCount.Key; // Store the group name in the Tag property
+                                                                                                 //series.Points[pointIndex].Tag = groupCount.Key; // Store the group name in the Tag property
 
                     // Customize label appearance
                     series.Points[pointIndex].LabelForeColor = Color.Black; // Set label text color
                     series.Points[pointIndex].LabelBackColor = Color.Transparent; // Set label background                   
                 }
             }
-            
+
             // Add the series to the chart
             chrtControl.Series.Add(series);
 
@@ -530,6 +585,146 @@ namespace FilesManager
         private void chkIncludeSubFolders_CheckedChanged(object sender, EventArgs e)
         {
             GroupFilesByType(this.directoryPath);
+        }
+
+        private Dictionary<string, GooglePhoto> LoadGooglePhotosJsonFiles(string directoryPath)
+        {
+            googlePhotosDictionary = new Dictionary<string, GooglePhoto>();
+
+            try
+            {
+
+                // Get all .json files from the directory and subdirectories
+                string[] jsonFiles = System.IO.Directory.GetFiles(directoryPath, "*.json", SearchOption.AllDirectories);
+
+                foreach (string filePath in jsonFiles)
+                {
+                    try
+                    {
+                        // Read the JSON file content
+                        string jsonContent = File.ReadAllText(filePath);
+
+                        // Deserialize the JSON content to a GooglePhoto object
+                        GooglePhoto photo = JsonConvert.DeserializeObject<GooglePhoto>(jsonContent);
+
+                        if (photo != null)
+                        {
+                            // Use the file name as the key and the deserialized object as the value
+                            googlePhotosDictionary[Path.GetFileName(filePath)] = photo;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add(new ErrorModel { File = filePath, ErrorMessage = ex.Message });
+                    }
+                }
+                if (errors.Count > 0)
+                {
+                    frmErrorWindow.ErrorModelList = errors;
+                    frmErrorWindow.DisplayErrorsInGrid();
+                    frmErrorWindow.Show();
+                }
+
+
+            }
+            catch (Exception ex) { }
+            return googlePhotosDictionary;
+        }
+
+        public void AddGeoDataToImageIfAbsent(string imagePath, double latitude, double longitude)
+        {
+            using (var image = new MagickImage(imagePath))
+            {
+                // Check if the image already contains geodata
+                var gpsLatitude = image.GetExifProfile()?.GetValue(ImageMagick.ExifTag.GPSLatitude);
+                var gpsLongitude = image.GetExifProfile()?.GetValue(ImageMagick.ExifTag.GPSLongitude);
+
+                if (gpsLatitude != null && gpsLongitude != null)
+                {
+                    //Console.WriteLine("Image already contains geodata.");
+                    return;
+                }
+
+                // Create or get the ExifProfile
+                var profile = image.GetExifProfile() ?? new ExifProfile();
+
+                // Convert latitude and longitude to degrees, minutes, and seconds (DMS)
+                var latDMS = ConvertDecimalDegreesToDMS(latitude);
+                var lonDMS = ConvertDecimalDegreesToDMS(longitude);
+
+                // Set GPS latitude and longitude tags
+                profile.SetValue(ImageMagick.ExifTag.GPSLatitude, latDMS);
+                profile.SetValue(ImageMagick.ExifTag.GPSLatitudeRef, latitude >= 0 ? "N" : "S");
+                profile.SetValue(ImageMagick.ExifTag.GPSLongitude, lonDMS);
+                profile.SetValue(ImageMagick.ExifTag.GPSLongitudeRef, longitude >= 0 ? "E" : "W");
+
+                // Add or update the ExifProfile
+                image.SetProfile(profile);
+
+                // Save the image
+                image.Write(imagePath);
+
+                // Console.WriteLine("Geodata added to the image.");
+            }
+        }
+
+        private static ImageMagick.Rational[] ConvertDecimalDegreesToDMS(double decimalDegrees)
+        {
+            // Convert decimal degrees to degrees, minutes, and seconds
+            var degrees = (int)decimalDegrees;
+            var minutes = (int)((decimalDegrees - degrees) * 60);
+            var seconds = (decimalDegrees - degrees - minutes / 60.0) * 3600.0;
+
+            return new[]
+            {
+        new ImageMagick.Rational(Math.Abs(degrees)),
+        new ImageMagick.Rational(Math.Abs(minutes)),
+        new ImageMagick.Rational(Math.Abs(seconds))
+    };
+        }
+        public void AddPeopleNamesToImageIPTC(string imagePath, List<string> peopleNames)
+        {
+            using (var image = new MagickImage(imagePath))
+            {
+                var fileInfo = new FileInfo(imagePath);
+                // Create or get the IPTC profile
+                var profile = image.GetIptcProfile() ?? new IptcProfile();
+                profile.SetValue(IptcTag.Caption, fileInfo.Name);
+                // Add people names to the IPTC profile
+                foreach (var name in peopleNames)
+                {
+                    profile.SetValue(IptcTag.Keyword, name);
+                }
+
+                // Add or update the IPTC profile
+                image.SetProfile(profile);
+
+                // Save the image
+                image.Write(imagePath);
+
+                //Console.WriteLine("People names added to the image IPTC metadata.");
+            }
+        }
+
+        private void comboBoxFileTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.selectedFileTypeFromCheckBox = comboBoxFileTypes.SelectedItem.ToString();
+        }
+
+        private void chkGooglePhotosMetaData_CheckedChanged(object sender, EventArgs e)
+        {
+            this.IsGooglePhotosMetaDataChecked = chkGooglePhotosMetaData.Checked;
+        }
+
+        private void EnableDisableAllControls()
+        {
+            btnBrowse.Enabled = !btnBrowse.Enabled;
+            tStripBtnProceedToCopy.Enabled = !tStripBtnProceedToCopy.Enabled;
+            comboBoxFileTypes.Enabled = !comboBoxFileTypes.Enabled;
+            chkIncludeSubFolders.Enabled = !chkIncludeSubFolders.Enabled;
+            chkGooglePhotosMetaData.Enabled = !chkGooglePhotosMetaData.Enabled;
+            cBoxPathFormat.Enabled = !cBoxPathFormat.Enabled;
+
         }
     }
 }

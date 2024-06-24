@@ -29,19 +29,18 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.clmHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmDateCreated = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
-            this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
-            this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
             this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
             this.chkIncludeSubFolders = new System.Windows.Forms.CheckBox();
@@ -63,16 +62,18 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
-            this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chkGooglePhotosMetaData = new System.Windows.Forms.CheckBox();
+            this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
+            this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -87,7 +88,7 @@
             this.listViewFiles.HideSelection = false;
             this.listViewFiles.Location = new System.Drawing.Point(0, 0);
             this.listViewFiles.Name = "listViewFiles";
-            this.listViewFiles.Size = new System.Drawing.Size(429, 926);
+            this.listViewFiles.Size = new System.Drawing.Size(384, 926);
             this.listViewFiles.TabIndex = 0;
             this.listViewFiles.UseCompatibleStateImageBehavior = false;
             this.listViewFiles.View = System.Windows.Forms.View.Details;
@@ -127,28 +128,10 @@
             this.toolStripMain.TabIndex = 1;
             this.toolStripMain.Text = "toolStrip1";
             // 
-            // toolStripLblFilePath
-            // 
-            this.toolStripLblFilePath.DoubleClickEnabled = true;
-            this.toolStripLblFilePath.Image = global::FilesManager.Properties.Resources.Opened_Folder;
-            this.toolStripLblFilePath.Name = "toolStripLblFilePath";
-            this.toolStripLblFilePath.Size = new System.Drawing.Size(65, 22);
-            this.toolStripLblFilePath.Text = "FilePath";
-            this.toolStripLblFilePath.DoubleClick += new System.EventHandler(this.toolStripLblFilePath_DoubleClick);
-            // 
-            // tStripBtnProceedToCopy
-            // 
-            this.tStripBtnProceedToCopy.Image = global::FilesManager.Properties.Resources.Next;
-            this.tStripBtnProceedToCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tStripBtnProceedToCopy.Name = "tStripBtnProceedToCopy";
-            this.tStripBtnProceedToCopy.Size = new System.Drawing.Size(70, 22);
-            this.tStripBtnProceedToCopy.Text = "Proceed";
-            this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
-            // 
             // FileprogressBar
             // 
             this.FileprogressBar.Name = "FileprogressBar";
-            this.FileprogressBar.Size = new System.Drawing.Size(100, 22);
+            this.FileprogressBar.Size = new System.Drawing.Size(300, 22);
             this.FileprogressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             // 
             // splitContainer1
@@ -168,11 +151,32 @@
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
             this.splitContainer1.Size = new System.Drawing.Size(1288, 926);
-            this.splitContainer1.SplitterDistance = 429;
+            this.splitContainer1.SplitterDistance = 384;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // chrtControl
+            // 
+            this.chrtControl.BorderlineWidth = 0;
+            chartArea4.Name = "ChartArea1";
+            this.chrtControl.ChartAreas.Add(chartArea4);
+            this.chrtControl.IsSoftShadows = false;
+            legend4.Name = "Legend1";
+            this.chrtControl.Legends.Add(legend4);
+            this.chrtControl.Location = new System.Drawing.Point(30, 193);
+            this.chrtControl.Name = "chrtControl";
+            this.chrtControl.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chrtControl.Series.Add(series4);
+            this.chrtControl.Size = new System.Drawing.Size(798, 558);
+            this.chrtControl.TabIndex = 1;
+            this.chrtControl.Text = "chart1";
+            this.chrtControl.TextAntiAliasingQuality = System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality.Normal;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkGooglePhotosMetaData);
             this.groupBox1.Controls.Add(this.chkIncludeFileName);
             this.groupBox1.Controls.Add(this.chkIncludeSubFolders);
             this.groupBox1.Controls.Add(this.label3);
@@ -192,7 +196,7 @@
             // chkIncludeFileName
             // 
             this.chkIncludeFileName.AutoSize = true;
-            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 96);
+            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 88);
             this.chkIncludeFileName.Name = "chkIncludeFileName";
             this.chkIncludeFileName.Size = new System.Drawing.Size(149, 17);
             this.chkIncludeFileName.TabIndex = 9;
@@ -227,6 +231,7 @@
             this.comboBoxFileTypes.Name = "comboBoxFileTypes";
             this.comboBoxFileTypes.Size = new System.Drawing.Size(230, 21);
             this.comboBoxFileTypes.TabIndex = 6;
+            this.comboBoxFileTypes.SelectedIndexChanged += new System.EventHandler(this.comboBoxFileTypes_SelectedIndexChanged);
             // 
             // kryptonBreadCrumb1
             // 
@@ -340,23 +345,35 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
-            // chrtControl
+            // chkGooglePhotosMetaData
             // 
-            this.chrtControl.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDot;
-            chartArea2.Name = "ChartArea1";
-            this.chrtControl.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chrtControl.Legends.Add(legend2);
-            this.chrtControl.Location = new System.Drawing.Point(30, 193);
-            this.chrtControl.Name = "chrtControl";
-            this.chrtControl.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chrtControl.Series.Add(series2);
-            this.chrtControl.Size = new System.Drawing.Size(798, 558);
-            this.chrtControl.TabIndex = 1;
-            this.chrtControl.Text = "chart1";
+            this.chkGooglePhotosMetaData.AutoSize = true;
+            this.chkGooglePhotosMetaData.Location = new System.Drawing.Point(514, 120);
+            this.chkGooglePhotosMetaData.Name = "chkGooglePhotosMetaData";
+            this.chkGooglePhotosMetaData.Size = new System.Drawing.Size(179, 17);
+            this.chkGooglePhotosMetaData.TabIndex = 10;
+            this.chkGooglePhotosMetaData.Text = "Merge Google Photos MetaData";
+            this.chkGooglePhotosMetaData.UseVisualStyleBackColor = true;
+            this.chkGooglePhotosMetaData.CheckedChanged += new System.EventHandler(this.chkGooglePhotosMetaData_CheckedChanged);
+            // 
+            // toolStripLblFilePath
+            // 
+            this.toolStripLblFilePath.DoubleClickEnabled = true;
+            this.toolStripLblFilePath.Image = global::FilesManager.Properties.Resources.Opened_Folder;
+            this.toolStripLblFilePath.Name = "toolStripLblFilePath";
+            this.toolStripLblFilePath.Size = new System.Drawing.Size(65, 22);
+            this.toolStripLblFilePath.Text = "FilePath";
+            this.toolStripLblFilePath.DoubleClick += new System.EventHandler(this.toolStripLblFilePath_DoubleClick);
+            // 
+            // tStripBtnProceedToCopy
+            // 
+            this.tStripBtnProceedToCopy.Image = global::FilesManager.Properties.Resources.Next;
+            this.tStripBtnProceedToCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tStripBtnProceedToCopy.Margin = new System.Windows.Forms.Padding(5, 1, 5, 2);
+            this.tStripBtnProceedToCopy.Name = "tStripBtnProceedToCopy";
+            this.tStripBtnProceedToCopy.Size = new System.Drawing.Size(95, 22);
+            this.tStripBtnProceedToCopy.Text = "Arrange Files";
+            this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
             // 
             // frmMain
             // 
@@ -374,11 +391,11 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -418,6 +435,7 @@
         private System.Windows.Forms.CheckBox chkIncludeSubFolders;
         private System.Windows.Forms.CheckBox chkIncludeFileName;
         private System.Windows.Forms.DataVisualization.Charting.Chart chrtControl;
+        private System.Windows.Forms.CheckBox chkGooglePhotosMetaData;
     }
 }
 
