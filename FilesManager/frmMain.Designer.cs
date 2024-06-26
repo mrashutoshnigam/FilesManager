@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.listViewFiles = new System.Windows.Forms.ListView();
             this.clmHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmHeaderType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,6 +42,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkGooglePhotosMetaData = new System.Windows.Forms.CheckBox();
             this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
             this.chkIncludeSubFolders = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -62,9 +63,10 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
-            this.chkGooglePhotosMetaData = new System.Windows.Forms.CheckBox();
+            this.btnCopyMoveToogleButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
             this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
+            this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -121,7 +123,8 @@
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLblFilePath,
             this.tStripBtnProceedToCopy,
-            this.FileprogressBar});
+            this.FileprogressBar,
+            this.btnStop});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Name = "toolStripMain";
             this.toolStripMain.Size = new System.Drawing.Size(1288, 25);
@@ -157,18 +160,18 @@
             // chrtControl
             // 
             this.chrtControl.BorderlineWidth = 0;
-            chartArea5.Name = "ChartArea1";
-            this.chrtControl.ChartAreas.Add(chartArea5);
+            chartArea1.Name = "ChartArea1";
+            this.chrtControl.ChartAreas.Add(chartArea1);
             this.chrtControl.IsSoftShadows = false;
-            legend5.Name = "Legend1";
-            this.chrtControl.Legends.Add(legend5);
+            legend1.Name = "Legend1";
+            this.chrtControl.Legends.Add(legend1);
             this.chrtControl.Location = new System.Drawing.Point(30, 193);
             this.chrtControl.Name = "chrtControl";
             this.chrtControl.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series5.ChartArea = "ChartArea1";
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chrtControl.Series.Add(series5);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chrtControl.Series.Add(series1);
             this.chrtControl.Size = new System.Drawing.Size(798, 558);
             this.chrtControl.TabIndex = 1;
             this.chrtControl.Text = "chart1";
@@ -176,6 +179,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnCopyMoveToogleButton);
             this.groupBox1.Controls.Add(this.chkGooglePhotosMetaData);
             this.groupBox1.Controls.Add(this.chkIncludeFileName);
             this.groupBox1.Controls.Add(this.chkIncludeSubFolders);
@@ -193,10 +197,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Destination Path";
             // 
+            // chkGooglePhotosMetaData
+            // 
+            this.chkGooglePhotosMetaData.AutoSize = true;
+            this.chkGooglePhotosMetaData.Location = new System.Drawing.Point(514, 119);
+            this.chkGooglePhotosMetaData.Name = "chkGooglePhotosMetaData";
+            this.chkGooglePhotosMetaData.Size = new System.Drawing.Size(179, 17);
+            this.chkGooglePhotosMetaData.TabIndex = 10;
+            this.chkGooglePhotosMetaData.Text = "Merge Google Photos MetaData";
+            this.chkGooglePhotosMetaData.UseVisualStyleBackColor = true;
+            this.chkGooglePhotosMetaData.CheckedChanged += new System.EventHandler(this.chkGooglePhotosMetaData_CheckedChanged);
+            // 
             // chkIncludeFileName
             // 
             this.chkIncludeFileName.AutoSize = true;
-            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 88);
+            this.chkIncludeFileName.Location = new System.Drawing.Point(514, 92);
             this.chkIncludeFileName.Name = "chkIncludeFileName";
             this.chkIncludeFileName.Size = new System.Drawing.Size(149, 17);
             this.chkIncludeFileName.TabIndex = 9;
@@ -217,7 +232,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 104);
+            this.label3.Location = new System.Drawing.Point(9, 103);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(55, 13);
             this.label3.TabIndex = 7;
@@ -245,11 +260,12 @@
             this.kryptonBreadCrumb1.SelectedItem = this.kryptonBreadCrumb1.RootItem;
             this.kryptonBreadCrumb1.Size = new System.Drawing.Size(565, 28);
             this.kryptonBreadCrumb1.TabIndex = 5;
+            this.kryptonBreadCrumb1.DoubleClick += new System.EventHandler(this.kryptonBreadCrumb1_DoubleClick);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 68);
+            this.label2.Location = new System.Drawing.Point(9, 65);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(138, 13);
             this.label2.TabIndex = 4;
@@ -288,7 +304,7 @@
             "File Types/",
             "File Types/Year/",
             "File Types/Year/Month/"});
-            this.cBoxPathFormat.Location = new System.Drawing.Point(153, 65);
+            this.cBoxPathFormat.Location = new System.Drawing.Point(153, 61);
             this.cBoxPathFormat.Name = "cBoxPathFormat";
             this.cBoxPathFormat.Size = new System.Drawing.Size(230, 21);
             this.cBoxPathFormat.TabIndex = 0;
@@ -345,16 +361,14 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
-            // chkGooglePhotosMetaData
+            // btnCopyMoveToogleButton
             // 
-            this.chkGooglePhotosMetaData.AutoSize = true;
-            this.chkGooglePhotosMetaData.Location = new System.Drawing.Point(514, 120);
-            this.chkGooglePhotosMetaData.Name = "chkGooglePhotosMetaData";
-            this.chkGooglePhotosMetaData.Size = new System.Drawing.Size(179, 17);
-            this.chkGooglePhotosMetaData.TabIndex = 10;
-            this.chkGooglePhotosMetaData.Text = "Merge Google Photos MetaData";
-            this.chkGooglePhotosMetaData.UseVisualStyleBackColor = true;
-            this.chkGooglePhotosMetaData.CheckedChanged += new System.EventHandler(this.chkGooglePhotosMetaData_CheckedChanged);
+            this.btnCopyMoveToogleButton.Location = new System.Drawing.Point(153, 126);
+            this.btnCopyMoveToogleButton.Name = "btnCopyMoveToogleButton";
+            this.btnCopyMoveToogleButton.Size = new System.Drawing.Size(90, 25);
+            this.btnCopyMoveToogleButton.TabIndex = 12;
+            this.btnCopyMoveToogleButton.Values.Text = "Copy";
+            this.btnCopyMoveToogleButton.Click += new System.EventHandler(this.btnCopyMoveToogleButton_Click);
             // 
             // toolStripLblFilePath
             // 
@@ -374,6 +388,17 @@
             this.tStripBtnProceedToCopy.Size = new System.Drawing.Size(95, 22);
             this.tStripBtnProceedToCopy.Text = "Arrange Files";
             this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnStop.Enabled = false;
+            this.btnStop.Image = global::FilesManager.Properties.Resources.Stop;
+            this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(23, 22);
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // frmMain
             // 
@@ -436,6 +461,8 @@
         private System.Windows.Forms.CheckBox chkIncludeFileName;
         private System.Windows.Forms.DataVisualization.Charting.Chart chrtControl;
         private System.Windows.Forms.CheckBox chkGooglePhotosMetaData;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnCopyMoveToogleButton;
+        private System.Windows.Forms.ToolStripButton btnStop;
     }
 }
 

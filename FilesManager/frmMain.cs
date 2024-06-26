@@ -38,6 +38,7 @@ namespace FilesManager
         Dictionary<string, GooglePhoto> googlePhotosDictionary;
         string selectedFileTypeFromCheckBox;
         bool IsGooglePhotosMetaDataChecked = false;
+        bool isCopyOperation = true;
         Dictionary<string, List<string>> fileTypeGroups = new Dictionary<string, List<string>>
         {
             { "Images", new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"} },
@@ -58,6 +59,8 @@ namespace FilesManager
             this.directoryPath = directoryPath;
             this.Load += new EventHandler(frmMain_Load);
             filesList = new List<Dictionary<string, string>>();
+
+            btnCopyMoveToogleButton.PerformClick();
 
         }
 
@@ -256,7 +259,7 @@ namespace FilesManager
             string path = args[0].ToString();
             string selectedFormat = (string)args[1];
             string selectedFileGroup = (string)args[2];
-           
+
             this.filesList.Clear();
             ListAllDirectories(toolStripLblFilePath.Text);
 
@@ -280,7 +283,7 @@ namespace FilesManager
                     if (!System.IO.Directory.Exists(pathToCreate))
                     {
                         System.IO.Directory.CreateDirectory(pathToCreate);
-                    }                  
+                    }
 
                     if (IsGooglePhotosMetaDataChecked && fileGroup == "Images")
                     {
@@ -297,7 +300,7 @@ namespace FilesManager
                                 AddPeopleNamesToImageIPTC(fileInfo.FullName, googlePhoto.People.Select(p => p.Name).ToList());
                             }
                             if (dateCreated.Date == DateTime.Now.Date)
-                            {                              
+                            {
                                 try
                                 {
                                     DateTime result = DateTime.Parse(googlePhoto.PhotoTakenTime.Formatted.Replace("UTC", "").Trim());
@@ -315,14 +318,52 @@ namespace FilesManager
                     }
                     fileNameNew += fileInfo.Extension;
                     string destinationFile = System.IO.Path.Combine(pathToCreate, fileNameNew);
-                    System.IO.File.Copy(sourceFile, destinationFile, true);
+                    if (isCopyOperation)
+                    {
+                        System.IO.File.Copy(sourceFile, destinationFile, true);
+                    }
+                    else
+                    {
+                        if (System.IO.File.Exists(destinationFile))
+                        {
+                            FileInfo sourceFileInfo = new FileInfo(sourceFile);
+                            FileInfo destinationFileInfo = new FileInfo(destinationFile);
+
+                            bool isSizeEqual = sourceFileInfo.Length == destinationFileInfo.Length;
+                            bool isLastWriteTimeEqual = sourceFileInfo.LastWriteTime == destinationFileInfo.LastWriteTime;
+
+                            // If both size and last write time are equal, consider them similar and ignore
+                            if (isSizeEqual && isLastWriteTimeEqual)
+                            {
+                                errors.Add(new ErrorModel { File = sourceFile, ErrorMessage = $"File Exists: Source : {sourceFile}, Dest: {destinationFile}" });                                
+                            }
+                            else
+                            {
+                                if(sourceFile.Length > destinationFile.Length)
+                                {
+                                    System.IO.File.Delete(destinationFile);
+                                    System.IO.File.Move(sourceFile, destinationFile);
+                                }
+                                else
+                                {
+                                    errors.Add(new ErrorModel { File = sourceFile, ErrorMessage = $"File Exists: Source : {sourceFile}, Dest: {destinationFile}" });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            System.IO.File.Move(sourceFile, destinationFile);
+                        }
+
+                    }
+                    //System.IO.File.Copy(sourceFile, destinationFile, true);
 
                     processedFiles++;
                     int progressPercentage = (int)((float)processedFiles / (float)totalFiles * 100);
                     backgroundWorker1.ReportProgress(progressPercentage);
                 }
             }
-           
+
         }
 
         private string ConstructPathBasedOnFormat(string basePath, DateTime dateCreated, string fileType, string selectedFormat)
@@ -724,7 +765,34 @@ namespace FilesManager
             chkIncludeSubFolders.Enabled = !chkIncludeSubFolders.Enabled;
             chkGooglePhotosMetaData.Enabled = !chkGooglePhotosMetaData.Enabled;
             cBoxPathFormat.Enabled = !cBoxPathFormat.Enabled;
+            btnCopyMoveToogleButton.Enabled = !btnCopyMoveToogleButton.Enabled;
+            btnStop.Enabled = !btnStop.Enabled;
+        }
 
+        private void kryptonBreadCrumb1_DoubleClick(object sender, EventArgs e)
+        {
+            btnBrowse.PerformClick();
+
+        }
+
+        private void btnCopyMoveToogleButton_Click(object sender, EventArgs e)
+        {
+            if (isCopyOperation)
+            {
+                isCopyOperation = false;
+                btnCopyMoveToogleButton.Text = "Move";
+            }
+            else
+            {
+                isCopyOperation = true;
+                btnCopyMoveToogleButton.Text = "Copy";
+            }
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            backgroundWorker1.CancelAsync();
+            EnableDisableAllControls();
         }
     }
 }

@@ -365,6 +365,12 @@
   <ItemGroup>
     <None Include="Resources\Next.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop Sign.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stop.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Magick.NET-Q16-AnyCPU.13.9.1\build\netstandard20\Magick.NET-Q16-AnyCPU.targets" Condition="Exists('..\packages\Magick.NET-Q16-AnyCPU.13.9.1\build\netstandard20\Magick.NET-Q16-AnyCPU.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
