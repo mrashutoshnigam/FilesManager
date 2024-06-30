@@ -38,10 +38,15 @@
             this.clmHeaderSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clmDateCreated = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
+            this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
+            this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
             this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.dataGridViewFileExtensions = new System.Windows.Forms.DataGridView();
             this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnCopyMoveToogleButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.chkGooglePhotosMetaData = new System.Windows.Forms.CheckBox();
             this.chkIncludeFileName = new System.Windows.Forms.CheckBox();
             this.chkIncludeSubFolders = new System.Windows.Forms.CheckBox();
@@ -63,19 +68,18 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
-            this.btnCopyMoveToogleButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
-            this.toolStripLblFilePath = new System.Windows.Forms.ToolStripLabel();
-            this.tStripBtnProceedToCopy = new System.Windows.Forms.ToolStripButton();
-            this.btnStop = new System.Windows.Forms.ToolStripButton();
+            this.dataGridViewErrorList = new System.Windows.Forms.DataGridView();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFileExtensions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -90,7 +94,7 @@
             this.listViewFiles.HideSelection = false;
             this.listViewFiles.Location = new System.Drawing.Point(0, 0);
             this.listViewFiles.Name = "listViewFiles";
-            this.listViewFiles.Size = new System.Drawing.Size(384, 926);
+            this.listViewFiles.Size = new System.Drawing.Size(567, 1016);
             this.listViewFiles.TabIndex = 0;
             this.listViewFiles.UseCompatibleStateImageBehavior = false;
             this.listViewFiles.View = System.Windows.Forms.View.Details;
@@ -127,15 +131,45 @@
             this.btnStop});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(1288, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(1904, 25);
             this.toolStripMain.TabIndex = 1;
             this.toolStripMain.Text = "toolStrip1";
+            // 
+            // toolStripLblFilePath
+            // 
+            this.toolStripLblFilePath.DoubleClickEnabled = true;
+            this.toolStripLblFilePath.Image = global::FilesManager.Properties.Resources.Opened_Folder;
+            this.toolStripLblFilePath.Name = "toolStripLblFilePath";
+            this.toolStripLblFilePath.Size = new System.Drawing.Size(65, 22);
+            this.toolStripLblFilePath.Text = "FilePath";
+            this.toolStripLblFilePath.DoubleClick += new System.EventHandler(this.toolStripLblFilePath_DoubleClick);
+            // 
+            // tStripBtnProceedToCopy
+            // 
+            this.tStripBtnProceedToCopy.Image = global::FilesManager.Properties.Resources.Next;
+            this.tStripBtnProceedToCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tStripBtnProceedToCopy.Margin = new System.Windows.Forms.Padding(5, 1, 5, 2);
+            this.tStripBtnProceedToCopy.Name = "tStripBtnProceedToCopy";
+            this.tStripBtnProceedToCopy.Size = new System.Drawing.Size(95, 22);
+            this.tStripBtnProceedToCopy.Text = "Arrange Files";
+            this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
             // 
             // FileprogressBar
             // 
             this.FileprogressBar.Name = "FileprogressBar";
             this.FileprogressBar.Size = new System.Drawing.Size(300, 22);
             this.FileprogressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // 
+            // btnStop
+            // 
+            this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnStop.Enabled = false;
+            this.btnStop.Image = global::FilesManager.Properties.Resources.Stop;
+            this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(23, 22);
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // splitContainer1
             // 
@@ -150,12 +184,25 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridViewErrorList);
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridViewFileExtensions);
             this.splitContainer1.Panel2.Controls.Add(this.chrtControl);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-            this.splitContainer1.Size = new System.Drawing.Size(1288, 926);
-            this.splitContainer1.SplitterDistance = 384;
+            this.splitContainer1.Size = new System.Drawing.Size(1904, 1016);
+            this.splitContainer1.SplitterDistance = 567;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // dataGridViewFileExtensions
+            // 
+            this.dataGridViewFileExtensions.AllowUserToAddRows = false;
+            this.dataGridViewFileExtensions.AllowUserToDeleteRows = false;
+            this.dataGridViewFileExtensions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewFileExtensions.Location = new System.Drawing.Point(850, 14);
+            this.dataGridViewFileExtensions.Name = "dataGridViewFileExtensions";
+            this.dataGridViewFileExtensions.ReadOnly = true;
+            this.dataGridViewFileExtensions.Size = new System.Drawing.Size(310, 667);
+            this.dataGridViewFileExtensions.TabIndex = 14;
             // 
             // chrtControl
             // 
@@ -172,7 +219,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chrtControl.Series.Add(series1);
-            this.chrtControl.Size = new System.Drawing.Size(798, 558);
+            this.chrtControl.Size = new System.Drawing.Size(798, 488);
             this.chrtControl.TabIndex = 1;
             this.chrtControl.Text = "chart1";
             this.chrtControl.TextAntiAliasingQuality = System.Windows.Forms.DataVisualization.Charting.TextAntiAliasingQuality.Normal;
@@ -196,6 +243,15 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Destination Path";
+            // 
+            // btnCopyMoveToogleButton
+            // 
+            this.btnCopyMoveToogleButton.Location = new System.Drawing.Point(153, 126);
+            this.btnCopyMoveToogleButton.Name = "btnCopyMoveToogleButton";
+            this.btnCopyMoveToogleButton.Size = new System.Drawing.Size(90, 25);
+            this.btnCopyMoveToogleButton.TabIndex = 12;
+            this.btnCopyMoveToogleButton.Values.Text = "Copy";
+            this.btnCopyMoveToogleButton.Click += new System.EventHandler(this.btnCopyMoveToogleButton_Click);
             // 
             // chkGooglePhotosMetaData
             // 
@@ -361,50 +417,22 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
-            // btnCopyMoveToogleButton
+            // dataGridViewErrorList
             // 
-            this.btnCopyMoveToogleButton.Location = new System.Drawing.Point(153, 126);
-            this.btnCopyMoveToogleButton.Name = "btnCopyMoveToogleButton";
-            this.btnCopyMoveToogleButton.Size = new System.Drawing.Size(90, 25);
-            this.btnCopyMoveToogleButton.TabIndex = 12;
-            this.btnCopyMoveToogleButton.Values.Text = "Copy";
-            this.btnCopyMoveToogleButton.Click += new System.EventHandler(this.btnCopyMoveToogleButton_Click);
-            // 
-            // toolStripLblFilePath
-            // 
-            this.toolStripLblFilePath.DoubleClickEnabled = true;
-            this.toolStripLblFilePath.Image = global::FilesManager.Properties.Resources.Opened_Folder;
-            this.toolStripLblFilePath.Name = "toolStripLblFilePath";
-            this.toolStripLblFilePath.Size = new System.Drawing.Size(65, 22);
-            this.toolStripLblFilePath.Text = "FilePath";
-            this.toolStripLblFilePath.DoubleClick += new System.EventHandler(this.toolStripLblFilePath_DoubleClick);
-            // 
-            // tStripBtnProceedToCopy
-            // 
-            this.tStripBtnProceedToCopy.Image = global::FilesManager.Properties.Resources.Next;
-            this.tStripBtnProceedToCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tStripBtnProceedToCopy.Margin = new System.Windows.Forms.Padding(5, 1, 5, 2);
-            this.tStripBtnProceedToCopy.Name = "tStripBtnProceedToCopy";
-            this.tStripBtnProceedToCopy.Size = new System.Drawing.Size(95, 22);
-            this.tStripBtnProceedToCopy.Text = "Arrange Files";
-            this.tStripBtnProceedToCopy.Click += new System.EventHandler(this.tStripBtnProceedToCopy_Click);
-            // 
-            // btnStop
-            // 
-            this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnStop.Enabled = false;
-            this.btnStop.Image = global::FilesManager.Properties.Resources.Stop;
-            this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(23, 22);
-            this.btnStop.Text = "Stop";
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.dataGridViewErrorList.AllowUserToAddRows = false;
+            this.dataGridViewErrorList.AllowUserToDeleteRows = false;
+            this.dataGridViewErrorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewErrorList.Location = new System.Drawing.Point(30, 688);
+            this.dataGridViewErrorList.Name = "dataGridViewErrorList";
+            this.dataGridViewErrorList.ReadOnly = true;
+            this.dataGridViewErrorList.Size = new System.Drawing.Size(1130, 199);
+            this.dataGridViewErrorList.TabIndex = 15;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1288, 951);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStripMain);
             this.Name = "frmMain";
@@ -416,11 +444,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFileExtensions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -463,6 +493,8 @@
         private System.Windows.Forms.CheckBox chkGooglePhotosMetaData;
         private ComponentFactory.Krypton.Toolkit.KryptonButton btnCopyMoveToogleButton;
         private System.Windows.Forms.ToolStripButton btnStop;
+        private System.Windows.Forms.DataGridView dataGridViewFileExtensions;
+        private System.Windows.Forms.DataGridView dataGridViewErrorList;
     }
 }
 

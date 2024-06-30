@@ -26,15 +26,15 @@ using ImageMagick;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Diagnostics;
 
 namespace FilesManager
 {
     public partial class frmMain : DockContent
     {
         frmProperties frmProperties;
-        frmErrorWindow frmErrorWindow;
-        List<ErrorModel> errors;
-        List<Dictionary<string, string>> filesList;
+
+        Dictionary<string, string> filesList;
         string directoryPath;
         string destinationPath;
         Dictionary<string, GooglePhoto> googlePhotosDictionary;
@@ -44,7 +44,7 @@ namespace FilesManager
         private int progressCounter = 0;
         Dictionary<string, List<string>> fileTypeGroups = new Dictionary<string, List<string>>
         {
-            { "Images", new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"} },
+            { "Images", new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg", ".heic"} },
             { "PDFs", new List<string> { ".pdf" } },
             { "Documents", new List<string> { ".doc", ".docx", ".txt", ".odt", ".rtf", ".xls", ".xlsx", ".ppt", ".pptx" } },
             { "Compressed", new List<string> { ".zip", ".rar", ".7z", ".tar", ".gz", ".bz2" } },
@@ -61,7 +61,7 @@ namespace FilesManager
             InitializeComponent();
             this.directoryPath = directoryPath;
             this.Load += new EventHandler(frmMain_Load);
-            filesList = new List<Dictionary<string, string>>();
+            filesList = new Dictionary<string, string>();
 
             btnCopyMoveToogleButton.PerformClick();
 
@@ -80,11 +80,7 @@ namespace FilesManager
             await GroupFilesByTypeAsync(directoryPath);
             chkIncludeSubFolders.Checked = false;
             cBoxPathFormat.SelectedIndex = 2;
-            errors = new List<ErrorModel>();
-            frmErrorWindow = new frmErrorWindow();
-            frmErrorWindow.ErrorModelList = errors;
-            frmErrorWindow.Show(this.DockPanel, dockState: DockState.DockBottomAutoHide);
-            frmErrorWindow.AutoHidePortion = 150;
+            ConfigureDataGridViewErrorList();
             googlePhotosDictionary = await LoadGooglePhotosJsonFiles(directoryPath);
         }
 
@@ -133,6 +129,7 @@ namespace FilesManager
             {
                 // Handle exceptions
                 MessageBox.Show($"Error loading files and folders: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
             }
             finally
             {
@@ -236,16 +233,12 @@ namespace FilesManager
                         string extension = Path.GetExtension(file).ToLowerInvariant();
                         if (extensionsSet.Contains(extension))
                         {
-                            var fileInfo = new Dictionary<string, string>
-                    {
-                        { "Name", Path.GetFileName(file) },
-                        { "Path", file }
-                    };
-
                             // Thread-safe addition to the list
                             lock (filesList)
                             {
-                                filesList.Add(fileInfo);
+                                string key = Path.GetFileName(file);
+                                if (filesList.ContainsKey(key) == false)
+                                    filesList.Add(key, file);
                             }
                         }
                     });
@@ -304,7 +297,7 @@ namespace FilesManager
 
             Parallel.ForEach(filesList, (file) =>
             {
-                string sourceFile = file["Path"];
+                string sourceFile = file.Value;
                 var fileInfo = new FileInfo(sourceFile);
                 if (fileInfo.Exists)
                 {
@@ -330,15 +323,18 @@ namespace FilesManager
                         if (isCopyOperation)
                         {
                             File.Copy(sourceFile, destinationFile, true);
+                            AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Copied Successfully.");
                         }
                         else
                         {
                             MoveFileWithChecks(sourceFile, destinationFile, concurrentErrors);
+                            AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Moved Successfully.");
                         }
                     }
                     catch (Exception ex)
                     {
-                        concurrentErrors.Add(new ErrorModel { File = sourceFile, ErrorMessage = ex.Message });
+                        AddRowToDataGridViewErrorList("error", sourceFile, ex.Message);
+                        //concurrentErrors.Add(new ErrorModel { File = sourceFile, ErrorMessage = ex.Message });
                     }
 
                     // Report progress
@@ -348,7 +344,7 @@ namespace FilesManager
                 backgroundWorker1.ReportProgress((int)((newProgress / (double)totalFiles) * 100));
             });
 
-            errors.AddRange(concurrentErrors); // Assuming errors is thread-safe or accessed in a thread-safe manner later
+            //errors.AddRange(concurrentErrors); // Assuming errors is thread-safe or accessed in a thread-safe manner later
         }
 
         private void ProcessGooglePhotosMetadata(FileInfo fileInfo, ref DateTime dateCreated, Dictionary<string, GooglePhoto> googlePhotosDictionary)
@@ -411,7 +407,8 @@ namespace FilesManager
             }
             catch (Exception ex)
             {
-                errors.Add(new ErrorModel { File = sourceFile, ErrorMessage = $"Error moving file: {ex.Message}" });
+                AddRowToDataGridViewErrorList("error", sourceFile, ex.Message);
+                //errors.Add(new ErrorModel { File = sourceFile, ErrorMessage = $"Error moving file: {ex.Message}" });
             }
         }
 
@@ -505,7 +502,10 @@ namespace FilesManager
 
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                AddRowToDataGridViewErrorList("error", sourceFile, ex.Message);
+            }
             return dateTakenVar;
 
         }
@@ -659,7 +659,7 @@ namespace FilesManager
             {
                 series.Points.AddXY(group.Key, group.Value);
             }
-
+            //series.ChartType = SeriesChartType.Bar;
             // Add the series to the chart
             chrtControl.Series.Add(series);
 
@@ -688,7 +688,9 @@ namespace FilesManager
 
         private async void chkIncludeSubFolders_CheckedChanged(object sender, EventArgs e)
         {
+            await CountFilesByTypeAsync(this.directoryPath);
             await GroupFilesByTypeAsync(this.directoryPath);
+
         }
 
         private async Task<Dictionary<string, GooglePhoto>> LoadGooglePhotosJsonFiles(string directoryPath)
@@ -719,21 +721,23 @@ namespace FilesManager
                     }
                     catch (Exception ex)
                     {
-                        parallelErrors.Add(new ErrorModel { File = filePath, ErrorMessage = ex.Message });
+                        AddRowToDataGridViewErrorList("error", filePath, ex.Message);
+                        //parallelErrors.Add(new ErrorModel { File = filePath, ErrorMessage = ex.Message });
                     }
                 });
 
                 // Display errors if any
-                if (parallelErrors.Count > 0)
-                {
-                    errors.AddRange(parallelErrors); // Assuming 'errors' is a List<ErrorModel> accessible in this context
-                    frmErrorWindow.ErrorModelList = errors;
-                    frmErrorWindow.DisplayErrorsInGrid();
-                    frmErrorWindow.Show();
-                }
+                //if (parallelErrors.Count > 0)
+                //{
+                //    errors.AddRange(parallelErrors); // Assuming 'errors' is a List<ErrorModel> accessible in this context
+                //    frmErrorWindow.ErrorModelList = errors;
+                //    frmErrorWindow.DisplayErrorsInGrid();
+                //    frmErrorWindow.Show();
+                //}
             }
             catch (Exception ex)
             {
+                AddRowToDataGridViewErrorList("error", directoryPath, ex.Message);
                 // Handle potential exceptions from Directory.GetFiles or other initial setup steps
             }
 
@@ -781,6 +785,7 @@ namespace FilesManager
             }
             catch (Exception ex)
             {
+                AddRowToDataGridViewErrorList("error", imagePath, ex.Message);
                 // Handle exceptions
                 //MessageBox.Show($"Error adding geodata to the image: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -826,7 +831,9 @@ namespace FilesManager
 
                 //Console.WriteLine("People names added to the image IPTC metadata.");
             }
-            catch { }
+            catch(Exception ex) {
+                AddRowToDataGridViewErrorList("error", imagePath, ex.Message);
+            }
 
         }
 
@@ -879,6 +886,102 @@ namespace FilesManager
         {
             backgroundWorker1.CancelAsync();
             EnableDisableAllControls();
+        }
+
+
+
+        private async Task CountFilesByTypeAsync(string directoryPath)
+        {
+            try
+            {
+                if (!System.IO.Directory.Exists(directoryPath))
+                {
+                    throw new DirectoryNotFoundException($"The folder '{directoryPath}' was not found.");
+                }
+
+                var fileTypeCounts = new ConcurrentDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+                // Get all files from the folder and subfolders
+                var files = System.IO.Directory.EnumerateFiles(directoryPath, "*.*", chkIncludeSubFolders.Checked ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+
+                // Create a list of tasks for processing files
+                var tasks = files.Select(async file =>
+                {
+                    string extension = Path.GetExtension(file);
+
+                    if (string.IsNullOrEmpty(extension))
+                    {
+                        extension = "No Extension";
+                    }
+
+                    // Use a lock or concurrent collection for thread-safe operations
+                    fileTypeCounts.AddOrUpdate(extension, 1, (key, oldValue) => oldValue + 1);
+                });
+
+                // Await the completion of all tasks
+                await Task.WhenAll(tasks);
+
+                // Convert the ConcurrentDictionary to a binding-friendly format
+                var bindingList = fileTypeCounts.Select(kvp => new { Extension = kvp.Key.ToUpperInvariant(), Count = kvp.Value }).ToList();
+
+                // Update the UI on the UI thread
+                this.Invoke(new Action(() =>
+                {
+                    dataGridViewFileExtensions.DataSource = bindingList;
+                    dataGridViewFileExtensions.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+                }));
+            }
+            catch (Exception ex)
+            {
+                AddRowToDataGridViewErrorList("error", directoryPath, ex.Message);
+                //MessageBox.Show(ex.Message);
+            }
+        }
+        private void AddRowToDataGridViewErrorList(string messageType, string filePath, string errorMessage)
+        {
+            // Check if the call is from a non-UI thread
+            if (dataGridViewErrorList.InvokeRequired)
+            {
+                // Use Invoke to run this method on the UI thread
+                dataGridViewErrorList.Invoke(new Action(() => AddRowToDataGridViewErrorList(messageType, filePath, errorMessage)));
+                return;
+            }
+
+            // Add a new row to the DataGridView
+            int rowIndex = dataGridViewErrorList.Rows.Add();
+
+            // Set the values for the new row
+            dataGridViewErrorList.Rows[rowIndex].Cells[0].Value = messageType;
+            dataGridViewErrorList.Rows[rowIndex].Cells[1].Value = filePath;
+            dataGridViewErrorList.Rows[rowIndex].Cells[2].Value = errorMessage;
+
+            // Color the "Error" cell based on the messageType
+            switch (messageType.ToLower())
+            {
+                case "error":
+                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Red;
+                    break;
+                case "info":
+                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Blue;
+                    break;
+                case "success":
+                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Green;
+                    break;
+                default:
+                    // Default color if messageType is unrecognized
+                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Gray;
+                    break;
+            }
+        }
+
+        private void ConfigureDataGridViewErrorList()
+        {
+            dataGridViewErrorList.ColumnCount = 3;
+            dataGridViewErrorList.Columns[0].Name = "Type";
+            dataGridViewErrorList.Columns[1].Name = "File Path";
+            dataGridViewErrorList.Columns[2].Name = "Error Message";
+            dataGridViewErrorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            
         }
     }
 }
