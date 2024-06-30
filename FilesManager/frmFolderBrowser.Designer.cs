@@ -72,7 +72,7 @@
             this.Name = "frmFolderBrowser";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "frmFolderBrowser";
+            this.Text = "Folders Browser";
             this.ResumeLayout(false);
 
         }

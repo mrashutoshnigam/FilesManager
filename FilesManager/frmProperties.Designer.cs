@@ -45,7 +45,7 @@
             this.lstViewProperties.HideSelection = false;
             this.lstViewProperties.Location = new System.Drawing.Point(0, 0);
             this.lstViewProperties.Name = "lstViewProperties";
-            this.lstViewProperties.Size = new System.Drawing.Size(409, 902);
+            this.lstViewProperties.Size = new System.Drawing.Size(409, 925);
             this.lstViewProperties.TabIndex = 2;
             this.lstViewProperties.UseCompatibleStateImageBehavior = false;
             this.lstViewProperties.View = System.Windows.Forms.View.Details;
@@ -56,8 +56,14 @@
             // 
             // clmHeaderValue
             // 
-            this.clmHeaderValue.Text = "Value";           
-            
+            this.clmHeaderValue.Text = "Value";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(0, 0);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.TabIndex = 3;
             // 
             // frmProperties
             // 
@@ -67,7 +73,7 @@
             this.Controls.Add(this.lstViewProperties);
             this.Controls.Add(this.progressBar1);
             this.Name = "frmProperties";
-            this.Text = "frmProperties";
+            this.Text = "Properties";
             this.ResumeLayout(false);
 
         }

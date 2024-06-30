@@ -13,7 +13,7 @@ namespace FilesManager
     {
         public frmProperties()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         public void LoadProperties(string fileName)

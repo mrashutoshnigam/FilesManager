@@ -71,6 +71,7 @@ namespace FilesManager
         {
 
             frmProperties = new frmProperties();
+            frmProperties.Text = "Properties- " + this.Text;
             frmProperties.Show(this.DockPanel, dockState: DockState.DockRightAutoHide);
             toolStripLblFilePath.Text = directoryPath;
             loadFiles(directoryPath);
@@ -183,10 +184,10 @@ namespace FilesManager
                 ListViewItem item = listViewFiles.SelectedItems[0];
                 if (item != null && item.SubItems[1].Text != "Folder")
                 {
-                    frmProperties.Text = item.Text;
+                    frmProperties.Text = "Properties- " + this.Text + ":"+ item.Text;
                     frmProperties.Tag = item.Tag;
                     frmProperties.LoadProperties(item.Tag.ToString());
-                    frmProperties.Show(this.DockPanel, DockState.DockRight);
+                    //frmProperties.Show(this.DockPanel, DockState.DockRight);
                 }
             }
 
@@ -392,7 +393,7 @@ namespace FilesManager
                     if (isSizeEqual && isLastWriteTimeEqual)
                     {
                         // If both size and last write time are equal, consider them similar and ignore
-                        AddRowToDataGridViewErrorList("info", sourceFile, $"File Exists: Source : {sourceFile}, Dest: {destinationFile}" );                       
+                        AddRowToDataGridViewErrorList("info", sourceFile, $"File Exists: Source : {sourceFile}, Dest: {destinationFile}");
                     }
                     else
                     {
@@ -646,7 +647,7 @@ namespace FilesManager
         {
             // Clear existing series
             chrtControl.Series.Clear();
-            
+
             // Create a new series for file types
             Series series = new Series("FileTypes")
             {
@@ -832,7 +833,8 @@ namespace FilesManager
 
                 //Console.WriteLine("People names added to the image IPTC metadata.");
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 AddRowToDataGridViewErrorList("error", imagePath, ex.Message);
             }
 
@@ -980,7 +982,7 @@ namespace FilesManager
             dataGridViewErrorList.ColumnCount = 3;
             dataGridViewErrorList.Columns[0].Name = "Type";
             dataGridViewErrorList.Columns[1].Name = "File Path";
-            dataGridViewErrorList.Columns[2].Name = "Error Message";            
+            dataGridViewErrorList.Columns[2].Name = "Error Message";
             dataGridViewErrorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewErrorList.Columns[0].Width = 50;
 
