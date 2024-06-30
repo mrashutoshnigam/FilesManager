@@ -82,6 +82,7 @@ namespace FilesManager
             cBoxPathFormat.SelectedIndex = 2;
             ConfigureDataGridViewErrorList();
             googlePhotosDictionary = await LoadGooglePhotosJsonFiles(directoryPath);
+            dataGridViewFileExtensions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private async void loadFiles(string directoryPath)
@@ -391,7 +392,7 @@ namespace FilesManager
                     if (isSizeEqual && isLastWriteTimeEqual)
                     {
                         // If both size and last write time are equal, consider them similar and ignore
-                        errors.Add(new ErrorModel { File = sourceFile, ErrorMessage = $"File Exists: Source : {sourceFile}, Dest: {destinationFile}" });
+                        AddRowToDataGridViewErrorList("info", sourceFile, $"File Exists: Source : {sourceFile}, Dest: {destinationFile}" );                       
                     }
                     else
                     {
@@ -645,7 +646,7 @@ namespace FilesManager
         {
             // Clear existing series
             chrtControl.Series.Clear();
-
+            
             // Create a new series for file types
             Series series = new Series("FileTypes")
             {
@@ -959,17 +960,17 @@ namespace FilesManager
             switch (messageType.ToLower())
             {
                 case "error":
-                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Red;
+                    dataGridViewErrorList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Red;
                     break;
                 case "info":
-                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Blue;
+                    dataGridViewErrorList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Blue;
                     break;
                 case "success":
-                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Green;
+                    dataGridViewErrorList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Green;
                     break;
                 default:
                     // Default color if messageType is unrecognized
-                    dataGridViewErrorList.Rows[rowIndex].Cells[0].Style.BackColor = Color.Gray;
+                    dataGridViewErrorList.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Gray;
                     break;
             }
         }
@@ -979,9 +980,10 @@ namespace FilesManager
             dataGridViewErrorList.ColumnCount = 3;
             dataGridViewErrorList.Columns[0].Name = "Type";
             dataGridViewErrorList.Columns[1].Name = "File Path";
-            dataGridViewErrorList.Columns[2].Name = "Error Message";
+            dataGridViewErrorList.Columns[2].Name = "Error Message";            
             dataGridViewErrorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            
+            dataGridViewErrorList.Columns[0].Width = 50;
+
         }
     }
 }

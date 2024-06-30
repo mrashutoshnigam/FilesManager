@@ -43,6 +43,7 @@
             this.FileprogressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.dataGridViewErrorList = new System.Windows.Forms.DataGridView();
             this.dataGridViewFileExtensions = new System.Windows.Forms.DataGridView();
             this.chrtControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -68,18 +69,17 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
-            this.dataGridViewErrorList = new System.Windows.Forms.DataGridView();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFileExtensions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).BeginInit();
             this.SuspendLayout();
             // 
             // listViewFiles
@@ -192,6 +192,17 @@
             this.splitContainer1.Size = new System.Drawing.Size(1904, 1016);
             this.splitContainer1.SplitterDistance = 567;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // dataGridViewErrorList
+            // 
+            this.dataGridViewErrorList.AllowUserToAddRows = false;
+            this.dataGridViewErrorList.AllowUserToDeleteRows = false;
+            this.dataGridViewErrorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewErrorList.Location = new System.Drawing.Point(30, 688);
+            this.dataGridViewErrorList.Name = "dataGridViewErrorList";
+            this.dataGridViewErrorList.ReadOnly = true;
+            this.dataGridViewErrorList.Size = new System.Drawing.Size(1130, 316);
+            this.dataGridViewErrorList.TabIndex = 15;
             // 
             // dataGridViewFileExtensions
             // 
@@ -417,17 +428,6 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
-            // dataGridViewErrorList
-            // 
-            this.dataGridViewErrorList.AllowUserToAddRows = false;
-            this.dataGridViewErrorList.AllowUserToDeleteRows = false;
-            this.dataGridViewErrorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewErrorList.Location = new System.Drawing.Point(30, 688);
-            this.dataGridViewErrorList.Name = "dataGridViewErrorList";
-            this.dataGridViewErrorList.ReadOnly = true;
-            this.dataGridViewErrorList.Size = new System.Drawing.Size(1130, 199);
-            this.dataGridViewErrorList.TabIndex = 15;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -444,13 +444,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFileExtensions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chrtControl)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.comboBoxFileTypes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonBreadCrumb1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewErrorList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
