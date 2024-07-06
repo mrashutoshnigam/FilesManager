@@ -69,6 +69,7 @@
             this.visualStudioToolStripExtender1 = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.kryptonBreadCrumbItem7 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
             this.kryptonBreadCrumbItem8 = new ComponentFactory.Krypton.Toolkit.KryptonBreadCrumbItem();
+            this.btnClearLogs = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.toolStripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -237,6 +238,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnClearLogs);
             this.groupBox1.Controls.Add(this.btnCopyMoveToogleButton);
             this.groupBox1.Controls.Add(this.chkGooglePhotosMetaData);
             this.groupBox1.Controls.Add(this.chkIncludeFileName);
@@ -428,6 +430,15 @@
             // 
             this.kryptonBreadCrumbItem8.ShortText = "ListItem";
             // 
+            // btnClearLogs
+            // 
+            this.btnClearLogs.Location = new System.Drawing.Point(293, 126);
+            this.btnClearLogs.Name = "btnClearLogs";
+            this.btnClearLogs.Size = new System.Drawing.Size(90, 25);
+            this.btnClearLogs.TabIndex = 13;
+            this.btnClearLogs.Values.Text = "Clear Logs";
+            this.btnClearLogs.Click += new System.EventHandler(this.btnClearLogs_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -495,6 +506,7 @@
         private System.Windows.Forms.ToolStripButton btnStop;
         private System.Windows.Forms.DataGridView dataGridViewFileExtensions;
         private System.Windows.Forms.DataGridView dataGridViewErrorList;
+        private ComponentFactory.Krypton.Toolkit.KryptonButton btnClearLogs;
     }
 }
 

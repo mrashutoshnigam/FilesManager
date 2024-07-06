@@ -27,6 +27,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Diagnostics;
+using MediaInfoLib;
+using System.Runtime.InteropServices.ComTypes;
+
 
 namespace FilesManager
 {
@@ -71,7 +74,7 @@ namespace FilesManager
         {
 
             frmProperties = new frmProperties();
-            frmProperties.Text = "Properties- " + this.Text;
+            frmProperties.Text = "Metadata- " + this.Text;
             frmProperties.Show(this.DockPanel, dockState: DockState.DockRightAutoHide);
             toolStripLblFilePath.Text = directoryPath;
             loadFiles(directoryPath);
@@ -86,7 +89,7 @@ namespace FilesManager
             dataGridViewFileExtensions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
-        private async void loadFiles(string directoryPath)
+        private void loadFiles(string directoryPath)
         {
             try
             {
@@ -184,7 +187,7 @@ namespace FilesManager
                 ListViewItem item = listViewFiles.SelectedItems[0];
                 if (item != null && item.SubItems[1].Text != "Folder")
                 {
-                    frmProperties.Text = "Properties- " + this.Text + ":"+ item.Text;
+                    frmProperties.Text = "Metadata- " + this.Text + ":" + item.Text;
                     frmProperties.Tag = item.Tag;
                     frmProperties.LoadProperties(item.Tag.ToString());
                     //frmProperties.Show(this.DockPanel, DockState.DockRight);
@@ -245,6 +248,23 @@ namespace FilesManager
                         }
                     });
                 }
+                else
+                {
+                    if (selectedFileType == "Other")
+                    {
+                        string[] allFiles = System.IO.Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+                        Parallel.ForEach(allFiles, (file) =>
+                        {
+                            // Thread-safe addition to the list
+                            lock (filesList)
+                            {
+                                string key = Path.GetFileName(file);
+                                if (filesList.ContainsKey(key) == false)
+                                    filesList.Add(key, file);
+                            }
+                        });
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -297,53 +317,120 @@ namespace FilesManager
             var fileGroup = this.selectedFileTypeFromCheckBox.Substring(0, this.selectedFileTypeFromCheckBox.LastIndexOf(" (")).Trim();
             ConcurrentDictionary<string, bool> createdDirectories = new ConcurrentDictionary<string, bool>();
 
-            Parallel.ForEach(filesList, (file) =>
+            Parallel.ForEach(filesList, file =>
             {
-                string sourceFile = file.Value;
-                var fileInfo = new FileInfo(sourceFile);
-                if (fileInfo.Exists)
+                try
                 {
-                    var dateCreated = GetFileCreatedTimeFromExifData(sourceFile);
-                    string fileType = fileInfo.Extension.ToLower();
-
-                    var pathToCreate = ConstructPathBasedOnFormat(path, dateCreated, fileGroup, selectedFormat);
-                    createdDirectories.TryAdd(pathToCreate, true);
-
-                    if (!System.IO.Directory.Exists(pathToCreate))
+                    string sourceFile = file.Value;
+                    var fileInfo = new FileInfo(sourceFile);
+                    if (fileInfo.Exists)
                     {
-                        System.IO.Directory.CreateDirectory(pathToCreate); // Consider thread-safety or moving this outside the loop
-                    }
-
-                    // Additional processing for Google Photos metadata
-                    ProcessGooglePhotosMetadata(fileInfo, ref dateCreated, googlePhotosDictionary);
-
-                    var fileNameNew = ConstructNewFileName(dateCreated, fileInfo, chkIncludeFileName.Checked);
-                    string destinationFile = Path.Combine(pathToCreate, fileNameNew);
-
-                    try
-                    {
-                        if (isCopyOperation)
+                        DateTime dateCreated = DateTime.Now;
+                        if (fileGroup != "Other")
+                            dateCreated = GetFileCreatedTimeFromExifData(sourceFile);
+                        string fileType = fileInfo.Extension.ToLower();
+                        if (fileGroup == "Images")
                         {
-                            File.Copy(sourceFile, destinationFile, true);
-                            AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Copied Successfully.");
+                            // Additional processing for Google Photos metadata
+                            ProcessGooglePhotosMetadata(fileInfo, ref dateCreated, googlePhotosDictionary);
                         }
-                        else
+                        else if (fileGroup == "Raw")
                         {
-                            MoveFileWithChecks(sourceFile, destinationFile, concurrentErrors);
-                            AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Moved Successfully.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        AddRowToDataGridViewErrorList("error", sourceFile, ex.Message);
-                        //concurrentErrors.Add(new ErrorModel { File = sourceFile, ErrorMessage = ex.Message });
-                    }
+                            // Read all metadata from the image
+                            var directories = ImageMetadataReader.ReadMetadata(file.Value);
 
-                    // Report progress
-                    // Note: This part needs to be thread-safe. Consider using Interlocked.Increment for a thread-safe counter.
+                            // Find the so-called Exif "SubIFD" (which may be null)
+                            var subIfdDirectory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
+                            // Read the DateTime tag value
+                            var dateTime = subIfdDirectory?.GetDateTime(ExifDirectoryBase.TagDateTimeOriginal);
+                            if (dateTime.HasValue)
+                            {
+                                dateCreated = dateTime.Value;
+                            }
+                            else
+                            {
+                                dateCreated = fileInfo.LastWriteTime;
+                            }
+
+                        }
+                        else if (fileGroup == "PDFs" || fileGroup == "Documents" || fileGroup == "Compressed" || fileGroup == "Audio")
+                        {
+                            dateCreated = fileInfo.LastWriteTime;
+                        }
+                        else if (fileGroup == "Videos")
+                        {
+                            DateTime creationDate = fileInfo.CreationTime;
+
+                            // Create a new instance of MediaInfo
+                            var mediaInfo = new MediaInfo();
+
+                            // Open the video file
+                            mediaInfo.Open(fileInfo.FullName);
+                            string encodedDate = mediaInfo.Get(StreamKind.General, 0, "Encoded_Date");
+                            string format = "UTC yyyy-MM-dd HH:mm:ss";
+                            try
+                            {
+                                dateCreated = DateTime.ParseExact(encodedDate, format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                            }
+                            catch
+                            {
+                                dateCreated = fileInfo.LastWriteTime;
+                            }
+                            //dateCreated = Convert.ToDateTime(encodedDate);
+                            //string taggedDate = mediaInfo.Get(StreamKind.General, 0, "Tagged_Date");
+
+                        }
+                        else if (fileGroup == "Photoshop Files" || fileGroup == "Lightroom Catalogs" || fileGroup == "Setup Files")
+                        {
+                            dateCreated = fileInfo.LastWriteTime;
+                        }
+                        else if (fileGroup == "Other")
+                        {
+                            dateCreated = fileInfo.LastWriteTime;
+                        }
+                        var pathToCreate = ConstructPathBasedOnFormat(path, dateCreated, fileGroup, selectedFormat);
+                        createdDirectories.TryAdd(pathToCreate, true);
+
+                        if (!System.IO.Directory.Exists(pathToCreate))
+                        {
+                            System.IO.Directory.CreateDirectory(pathToCreate); // Consider thread-safety or moving this outside the loop
+                        }
+
+
+                        var fileNameNew = ConstructNewFileName(dateCreated, fileInfo, chkIncludeFileName.Checked);
+                        string destinationFile = Path.Combine(pathToCreate, fileNameNew);
+
+                        try
+                        {
+                            if (isCopyOperation)
+                            {
+                                File.Copy(sourceFile, destinationFile, true);
+                                AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Copied Successfully.");
+                            }
+                            else
+                            {
+                                MoveFileWithChecks(sourceFile, destinationFile, concurrentErrors);
+                                AddRowToDataGridViewErrorList("success", $"Source: {sourceFile}, Dest: {destinationFile}", "File Moved Successfully.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AddRowToDataGridViewErrorList("error", sourceFile, ex.Message);
+                            //concurrentErrors.Add(new ErrorModel { File = sourceFile, ErrorMessage = ex.Message });
+                        }
+
+                        // Report progress
+                        // Note: This part needs to be thread-safe. Consider using Interlocked.Increment for a thread-safe counter.
+                    }
+                    int newProgress = Interlocked.Increment(ref progressCounter);
+                    backgroundWorker1.ReportProgress((int)((newProgress / (double)totalFiles) * 100));
                 }
-                int newProgress = Interlocked.Increment(ref progressCounter);
-                backgroundWorker1.ReportProgress((int)((newProgress / (double)totalFiles) * 100));
+                catch (Exception ex)
+                {
+                    AddRowToDataGridViewErrorList("error", file.Value, ex.Message);
+                    //concurrentErrors.Add(new ErrorModel { File = file.Value, ErrorMessage = ex.Message });
+                }
             });
 
             //errors.AddRange(concurrentErrors); // Assuming errors is thread-safe or accessed in a thread-safe manner later
@@ -690,9 +777,15 @@ namespace FilesManager
 
         private async void chkIncludeSubFolders_CheckedChanged(object sender, EventArgs e)
         {
-            await CountFilesByTypeAsync(this.directoryPath);
-            await GroupFilesByTypeAsync(this.directoryPath);
-
+            try
+            {
+                await CountFilesByTypeAsync(this.directoryPath);
+                await GroupFilesByTypeAsync(this.directoryPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private async Task<Dictionary<string, GooglePhoto>> LoadGooglePhotosJsonFiles(string directoryPath)
@@ -751,6 +844,10 @@ namespace FilesManager
         {
             try
             {
+                if (imagePath.ToLower().Contains(".heic"))
+                {
+                    return;
+                }
                 var image = new MagickImage(imagePath);
 
 
@@ -783,6 +880,7 @@ namespace FilesManager
                 // Save the image
                 image.Write(imagePath);
 
+
                 // Console.WriteLine("Geodata added to the image.");}
             }
             catch (Exception ex)
@@ -812,8 +910,11 @@ namespace FilesManager
         {
             try
             {
-                var image = new MagickImage(imagePath);
-
+                if (imagePath.ToLower().Contains(".heic"))
+                {
+                    return;
+                }
+                MagickImage image = new MagickImage(imagePath);
 
                 var fileInfo = new FileInfo(imagePath);
                 // Create or get the IPTC profile
@@ -986,6 +1087,11 @@ namespace FilesManager
             dataGridViewErrorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewErrorList.Columns[0].Width = 50;
 
+        }
+
+        private void btnClearLogs_Click(object sender, EventArgs e)
+        {
+            dataGridViewErrorList.Rows.Clear();
         }
     }
 }
