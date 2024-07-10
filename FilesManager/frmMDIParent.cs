@@ -77,5 +77,11 @@ namespace FilesManager
             }
 
         }
+
+        private void btnOpenRenameForm_Click(object sender, EventArgs e)
+        {
+            frmRenameFolders childForm = new frmRenameFolders();
+            childForm.Show();
+        }
     }
 }

@@ -34,7 +34,10 @@
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dockPnl = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.btnOpenRenameForm = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -64,11 +67,31 @@
             this.dockPnl.Size = new System.Drawing.Size(1209, 980);
             this.dockPnl.TabIndex = 4;
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnOpenRenameForm});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1209, 25);
+            this.toolStrip1.TabIndex = 6;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // btnOpenRenameForm
+            // 
+            this.btnOpenRenameForm.Image = global::FilesManager.Properties.Resources.Folder;
+            this.btnOpenRenameForm.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnOpenRenameForm.Name = "btnOpenRenameForm";
+            this.btnOpenRenameForm.Size = new System.Drawing.Size(106, 22);
+            this.btnOpenRenameForm.Text = "Folder Rename";
+            this.btnOpenRenameForm.Click += new System.EventHandler(this.btnOpenRenameForm_Click);
+            // 
             // frmMDIParent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1209, 1002);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.dockPnl);
             this.Controls.Add(this.statusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -78,6 +101,8 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -88,6 +113,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolTip toolTip;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPnl;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton btnOpenRenameForm;
     }
 }
 
