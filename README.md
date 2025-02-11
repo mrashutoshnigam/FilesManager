@@ -5,21 +5,15 @@ The File Organizer Application is a Windows-based tool designed to organize a la
 ## Features
 
 - **Folder Selection**: Select a source folder containing unorganized files and designate a destination folder for organized files.
-  
 - **File Type Selection**: Specify which types of files (images, videos, documents) to organize.
-  
 - **Organizational Criteria**: Choose the format for organizing files based on creation date, such as by year> month> day, year>month, or file type > year.
-  
 - **Metadata Handling**: Reads metadata from files, including Google Photos metadata, to accurately organize based on creation dates.
 
 ## Usage
 
 1. **Select Source and Destination**: Choose the source folder containing unsorted files and define a target destination folder.
-   
 2. **Specify File Types**: Select the types of files (e.g., images, videos) you want to organize.
-   
 3. **Set Organizational Format**: Choose how files should be organized based on creation dates (e.g., by month, day).
-   
 4. **Run the Application**: Click "Proceed" to start the organization process.
 
 ## Installation
@@ -27,17 +21,13 @@ The File Organizer Application is a Windows-based tool designed to organize a la
 Currently, the application is designed for Windows operating systems. Follow these steps to install and run the application:
 
 1. Download the latest release from the [Releases](https://github.com/yourusername/your-repository/releases) page.
-   
 2. Extract the downloaded ZIP file to a location of your choice.
-   
 3. Double-click on the executable file (`FileOrganizer.exe`) to launch the application.
 
 ## Future Enhancements
 
 - **Enhanced Metadata Support**: Expand metadata reading capabilities to include additional file formats and sources.
-  
 - **User Interface Improvements**: Improve user experience with a more intuitive and user-friendly interface.
-  
 - **Integration Options**: Explore integration with cloud storage services and support for a wider range of file types.
 
 ## Contributing
@@ -52,3 +42,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions or feedback, feel free to reach out to [Your Name](mailto:youremail@example.com).
 
+## Screenshot
+
+Below is a screenshot of the File Organizer Application in action:
+
+![File Organizer Application Screenshot](FilesManager.png)
